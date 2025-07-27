@@ -10,7 +10,7 @@ services:
     ports:
       - "${BACKEND_PORT}:${BACKEND_PORT}"
     restart: always
-    command: dotnet watch run --no-launch-profile
+    command: dotnet run
     volumes:
       - ./backend:/backend
 

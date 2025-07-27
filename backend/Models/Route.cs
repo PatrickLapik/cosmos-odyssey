@@ -3,7 +3,7 @@ namespace CosmosOdyssey.Models;
 public class Route : BaseModel
 {
     public Guid Id { get; set; }
-    public int Distance { get; set; }
+    public long Distance { get; set; }
     
     public required Guid ToDestinationId { get; set; }
     public required Destination ToDestination { get; set; }

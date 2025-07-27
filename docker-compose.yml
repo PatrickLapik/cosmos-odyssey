@@ -13,6 +13,7 @@ services:
     command: dotnet run
     volumes:
       - ./backend:/backend
+      - ~/.nuget/packages:/root/.nuget/packages
 
   db:
     image: mariadb:11.8.2

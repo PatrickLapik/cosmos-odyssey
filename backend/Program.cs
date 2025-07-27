@@ -1,4 +1,5 @@
 using CosmosOdyssey.Data;
+using CosmosOdyssey.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +14,8 @@ var connectionString = builder.Configuration["ConnectionStrings:DataBaseConnecti
 
 builder.Services.AddDbContext<AppDbContext>(options =>
         options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+
+builder.Services.AddHttpClient<ExternalPriceListService>();
 
 var app = builder.Build();
 

@@ -1,4 +1,5 @@
 using CosmosOdyssey.Data;
+using CosmosOdyssey.Extensions;
 using CosmosOdyssey.Services;
 using Microsoft.EntityFrameworkCore;
 
@@ -6,16 +7,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+builder.Services.AddDependencyGroup();
 
-var connectionString = builder.Configuration["ConnectionStrings:DataBaseConnection"];
-
-builder.Services.AddDbContext<AppDbContext>(options =>
-        options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
-
-builder.Services.AddHttpClient<ExternalPriceListService>();
+builder.Services.AddHostedService<ExternalPriceListHostedService>();
 
 var app = builder.Build();
 

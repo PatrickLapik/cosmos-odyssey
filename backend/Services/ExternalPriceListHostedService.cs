@@ -5,12 +5,12 @@ namespace CosmosOdyssey.Services;
 public class ExternalPriceListHostedService : BackgroundService
 {
     private readonly ILogger<ExternalPriceListHostedService> _logger;
-    private readonly ExternalPriceListService _service;
+    private readonly IServiceProvider _services;
 
-    public ExternalPriceListHostedService(ILogger<ExternalPriceListHostedService> logger, ExternalPriceListService service)
+    public ExternalPriceListHostedService(ILogger<ExternalPriceListHostedService> logger, IServiceProvider services)
     {
         _logger = logger;
-        _service = service;
+        _services = services;
     }
     
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -23,16 +23,26 @@ public class ExternalPriceListHostedService : BackgroundService
     {
         _logger.LogInformation("Price List Api Hosted Service is working...");
 
+        using var scope = _services.CreateScope();
+        var externalPriceListService = scope.ServiceProvider.GetRequiredService<IExternalPriceListService>();
+        var apiLogService = scope.ServiceProvider.GetRequiredService<IApiLogService>();
+            
         while (!stoppingToken.IsCancellationRequested)
         {
             DateTime? validUntil = null;
-            ExternalPriceList? priceList = null;
-
+            
             try
             {
-                if (validUntil == null)
+                var latestLog = await apiLogService.GetLatest();
+
+                if (latestLog != null)
                 {
-                    priceList = await _service.GetPriceList();
+                    validUntil = latestLog.ExternalPriceList.ValidUntil;
+                }
+                
+                if (validUntil == null || validUntil <= DateTime.UtcNow)
+                {
+                    var priceList = await externalPriceListService.GetPriceList();
                     validUntil = priceList.ValidUntil;
                 }
                 
@@ -44,8 +54,6 @@ public class ExternalPriceListHostedService : BackgroundService
                 }
                 
                 await Task.Delay(delay, stoppingToken);
-                
-                // Do task
             }
             catch (Exception ex)
             {

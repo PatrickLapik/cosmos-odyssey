@@ -28,6 +28,8 @@ public class AppDbContext : DbContext
             .WithMany(d => d.RoutesToHere)
             .HasForeignKey(r => r.ToDestinationId)
             .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<ApiLog>().Property(e => e.ExternalPriceList).HasColumnType("json");
     }
 
     public required DbSet<Company> Companies { get; set; }
@@ -36,6 +38,7 @@ public class AppDbContext : DbContext
     public required DbSet<Reservation> Reservations { get; set; }
     public required DbSet<CompanyRoute> CompanyRoutes { get; set; }
     public required DbSet<TravelPrice> TravelPrices { get; set; }
+    public required DbSet<ApiLog> ApiLogs { get; set; }
     
     public override int SaveChanges()
     {

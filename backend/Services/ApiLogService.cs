@@ -4,24 +4,20 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CosmosOdyssey.Services;
 
-public class ApiLogService : IApiLogService
+public class ApiLogService : BaseService, IApiLogService
 {
-    private readonly AppDbContext _context;
-
-    public ApiLogService(AppDbContext context)
+    public ApiLogService(AppDbContext context) : base(context)
     {
-        _context = context;
     }
 
     public async Task Save(ApiLog apiLog)
     {
-        _context.ApiLogs.Add(apiLog);
-        await _context.SaveChangesAsync();
+        await Context.ApiLogs.AddAsync(apiLog);
+        await Context.SaveChangesAsync();
     }
 
     public async Task<ApiLog?> GetLatest()
     {
-        var log = await _context.ApiLogs.OrderByDescending(l => l.CreatedAt).FirstOrDefaultAsync();
-        return log;
+        return await Context.ApiLogs.OrderByDescending(l => l.CreatedAt).FirstOrDefaultAsync();
     }
 }

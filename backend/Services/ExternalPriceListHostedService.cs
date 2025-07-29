@@ -42,7 +42,8 @@ public class ExternalPriceListHostedService : BackgroundService
                 
                 if (validUntil == null || validUntil <= DateTime.UtcNow)
                 {
-                    var priceList = await externalPriceListService.GetPriceList();
+                    var priceList = await externalPriceListService.FetchPriceList();
+                    await externalPriceListService.SavePriceList(priceList);
                     validUntil = priceList.ValidUntil;
                 }
                 

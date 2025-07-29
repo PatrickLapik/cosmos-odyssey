@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CosmosOdyssey.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250728093008_AddApiLogs")]
+    [Migration("20250729094322_AddApiLogs")]
     partial class AddApiLogs
     {
         /// <inheritdoc />
@@ -40,7 +40,7 @@ namespace CosmosOdyssey.Migrations
                     b.ToTable("CompanyRouteReservation");
                 });
 
-            modelBuilder.Entity("CosmosOdyssey.Models.ApiLogs", b =>
+            modelBuilder.Entity("CosmosOdyssey.Models.ApiLog", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -94,11 +94,6 @@ namespace CosmosOdyssey.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasMaxLength(1020)
-                        .HasColumnType("varchar(1020)");
 
                     b.Property<Guid>("RouteId")
                         .HasColumnType("char(36)");

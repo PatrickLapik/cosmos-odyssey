@@ -11,6 +11,10 @@ namespace CosmosOdyssey.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropColumn(
+                name: "Description",
+                table: "CompanyRoutes");
+
             migrationBuilder.AlterColumn<long>(
                 name: "Distance",
                 table: "Routes",
@@ -49,6 +53,15 @@ namespace CosmosOdyssey.Migrations
                 nullable: false,
                 oldClrType: typeof(long),
                 oldType: "bigint");
+
+            migrationBuilder.AddColumn<string>(
+                name: "Description",
+                table: "CompanyRoutes",
+                type: "varchar(1020)",
+                maxLength: 1020,
+                nullable: false,
+                defaultValue: "")
+                .Annotation("MySql:CharSet", "utf8mb4");
         }
     }
 }

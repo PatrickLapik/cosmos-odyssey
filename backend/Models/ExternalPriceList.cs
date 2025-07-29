@@ -19,15 +19,15 @@ public class Leg
 public class RouteInfo
 {
     public Guid Id { get; set; }
-    public required DestinationInfo From { get; set; }
-    public required DestinationInfo To { get; set; }
+    public required Destination From { get; set; }
+    public required Destination To { get; set; }
     public long Distance { get; set; }
 }
 
 public class Provider
 {
     public Guid Id { get; set; }
-    public CompanyInfo? Company { get; set; }
+    public required CompanyInfo Company { get; set; }
     public double Price { get; set; }
     public DateTime FlightStart { get; set; }
     public DateTime FlightEnd { get; set; }
@@ -42,5 +42,5 @@ public class DestinationInfo
 public class CompanyInfo
 {
     public Guid Id { get; set; }
-    public string? Name { get; set; }
+    public required string Name { get; set; }
 }

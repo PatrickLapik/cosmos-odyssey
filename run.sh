@@ -4,6 +4,11 @@ set -a
 . ./backend/.env
 set +a
 
-dotnet restore ./backend
+if [ "$1" = "db" ]; then
+    docker compose --profile "db" up
+fi
 
-docker compose up --build
+if [ -z "$1" ]; then
+    docker compose --profile "db" --profile "backend" up --build
+fi
+

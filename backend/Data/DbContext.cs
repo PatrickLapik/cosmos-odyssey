@@ -32,13 +32,13 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<ApiLog>().Property(e => e.ExternalPriceList).HasColumnType("json");
     }
 
-    public required DbSet<Company> Companies { get; set; }
-    public required DbSet<Destination> Destinations { get; set; }
-    public required DbSet<Route> Routes { get; set; }
-    public required DbSet<Reservation> Reservations { get; set; }
-    public required DbSet<CompanyRoute> CompanyRoutes { get; set; }
-    public required DbSet<TravelPrice> TravelPrices { get; set; }
-    public required DbSet<ApiLog> ApiLogs { get; set; }
+    public DbSet<Company> Companies { get; set; }
+    public DbSet<Destination> Destinations { get; set; }
+    public DbSet<Route> Routes { get; set; }
+    public DbSet<Reservation> Reservations { get; set; }
+    public DbSet<CompanyRoute> CompanyRoutes { get; set; }
+    public DbSet<TravelPrice> TravelPrices { get; set; }
+    public DbSet<ApiLog> ApiLogs { get; set; }
     
     public override int SaveChanges()
     {

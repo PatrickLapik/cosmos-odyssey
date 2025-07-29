@@ -15,6 +15,7 @@ public class MappingProfile : Profile
 
         CreateMap<List<CompanyRoute>, FullCompanyRoutesResponse>()
             .ForMember(dest => dest.CompanyRouteResponses, opt => opt.MapFrom(src => src))
+            .ForMember(dest => dest.TotalDistance, opt => opt.MapFrom(src => src.Sum(d => d.Route!.Distance)))
             .ForMember(dest => dest.TotalPrice, opt => opt.MapFrom(src => src.Sum(p => p.Price)))
             .ForMember(dest => dest.TotalTravelMinutes,
                 opt => opt.MapFrom(src => (src.Last().TravelEnd - src.First().TravelStart).TotalMinutes));

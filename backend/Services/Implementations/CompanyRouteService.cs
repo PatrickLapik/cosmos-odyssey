@@ -43,10 +43,17 @@ public class CompanyRouteService : BaseService, ICompanyRouteService
         return _mapper.Map<Pagination<CompanyRouteResponse>>(results);
     }
 
-    public List<FullCompanyRoutesResponse> GetAllRoutes(Guid fromId, Guid toId)
+    public List<FullCompanyRoutesResponse> GetAllRoutes(RouteRequest request)
     {
-        var routes = _pathExplorerService.FindAllValidPaths(fromId, toId, DateTime.Now);
-        
-        return routes.ConvertAll(r => _mapper.Map<FullCompanyRoutesResponse>(r));
+        var routes = _pathExplorerService.FindAllValidPaths(request.FromId, request.ToId, DateTime.Now);
+        var mappedRoutes = routes.ConvertAll(r => _mapper.Map<FullCompanyRoutesResponse>(r));
+
+        return mappedRoutes
+            .Where(route => 
+                (request.CompanyId == Guid.Empty || route.CompanyRouteResponses.TrueForAll(cp => cp.Company.Id == request.CompanyId)) &&
+                (request.MaxPrice <= 0 || route.TotalPrice <= request.MaxPrice) &&
+                (request.MaxDistance <= 0 || route.TotalDistance <= request.MaxDistance) &&
+                (request.MaxTravelMinutes <= 0 || route.TotalTravelMinutes <= request.MaxTravelMinutes)
+            ).ToList();
     }
 }

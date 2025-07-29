@@ -1,8 +1,12 @@
 using CosmosOdyssey.Data;
+using CosmosOdyssey.Dtos;
 using CosmosOdyssey.Mappings;
 using CosmosOdyssey.Services;
 using CosmosOdyssey.Services.Graph;
+using CosmosOdyssey.Validators;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
+using SharpGrip.FluentValidation.AutoValidation.Mvc.Extensions;
 
 namespace CosmosOdyssey.Extensions;
 
@@ -13,8 +17,11 @@ public static class ServiceCollectionExtension
         services.AddControllers();
         services.AddOpenApi();
         services.AddHttpClient();
+        services.AddFluentValidationAutoValidation();
 
         services.AddAutoMapper(cfg => { }, typeof(MappingProfile));
+
+        services.AddScoped<IValidator<RouteRequest>, RouteRequestValidator>();
 
         services.AddSingleton<IGraphBuilderService, GraphBuilderService>();
         services.AddScoped<IPathExplorerService, PathExplorerService>();

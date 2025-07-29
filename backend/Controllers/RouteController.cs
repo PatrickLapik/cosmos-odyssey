@@ -10,16 +10,14 @@ using Route = CosmosOdyssey.Models.Route;
 namespace CosmosOdyssey.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("routes")]
 public class RouteController : ControllerBase
 {
     private readonly ICompanyRouteService _companyRouteService;
-    private readonly IValidator<RouteRequest> _routeRequestValidator;
 
-    public RouteController(ICompanyRouteService companyRouteService, IValidator<RouteRequest> routeRequestValidator)
+    public RouteController(ICompanyRouteService companyRouteService)
     {
         _companyRouteService = companyRouteService;
-        _routeRequestValidator = routeRequestValidator;
     }
     
     [HttpPost]

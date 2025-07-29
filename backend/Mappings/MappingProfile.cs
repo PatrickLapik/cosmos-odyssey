@@ -1,6 +1,7 @@
 using AutoMapper;
 using CosmosOdyssey.Dtos;
 using CosmosOdyssey.Models;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Pagination.EntityFrameworkCore.Extensions;
 using Route = CosmosOdyssey.Models.Route;
 
@@ -20,7 +21,19 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.TotalTravelMinutes,
                 opt => opt.MapFrom(src => (src.Last().TravelEnd - src.First().TravelStart).TotalMinutes));
 
+        CreateMap<Reservation, ReservationResponse>()
+            .ForMember(dest => dest.CompanyNames,
+                opt => opt.MapFrom(src => src.CompanyRoutes.Select(c => c.Company.Name).Distinct().ToList()))
+            .ForMember(dest => dest.CompanyRoutes, opt => opt.MapFrom(src => src.CompanyRoutes));
+
         CreateMap<Company, CompanyResponse>();
+        
+        CreateMap<CompanyRoute, RouteResponse>()
+            .ForMember(dest => dest.FromId, opt => opt.MapFrom(src => src.Route.FromDestinationId))
+            .ForMember(dest => dest.ToId, opt => opt.MapFrom(src => src.Route.ToDestinationId))
+            .ForMember(dest => dest.From, opt => opt.MapFrom(src => src.Route.FromDestination.Name))
+            .ForMember(dest => dest.To, opt => opt.MapFrom(src => src.Route.ToDestination.Name));
+        
         CreateMap<Route, RouteResponse>()
             .ForMember(dest => dest.To, opt => opt.MapFrom(src => src.ToDestination.Name))
             .ForMember(dest => dest.From, opt => opt.MapFrom(src => src.FromDestination.Name))

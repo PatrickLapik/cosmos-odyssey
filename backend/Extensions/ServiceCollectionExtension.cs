@@ -3,6 +3,7 @@ using CosmosOdyssey.Dtos;
 using CosmosOdyssey.Mappings;
 using CosmosOdyssey.Services;
 using CosmosOdyssey.Services.Graph;
+using CosmosOdyssey.Services.Interfaces;
 using CosmosOdyssey.Validators;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
@@ -22,6 +23,7 @@ public static class ServiceCollectionExtension
         services.AddAutoMapper(cfg => { }, typeof(MappingProfile));
 
         services.AddScoped<IValidator<RouteRequest>, RouteRequestValidator>();
+        services.AddScoped<IValidator<ReservationRequest>, ReservationRequestValidator>();
 
         services.AddSingleton<IGraphBuilderService, GraphBuilderService>();
         services.AddScoped<IPathExplorerService, PathExplorerService>();
@@ -32,6 +34,7 @@ public static class ServiceCollectionExtension
         services.AddScoped<ITravelPriceService, TravePriceService>();
         services.AddScoped<IDestinationService, DestinationService>();
         services.AddScoped<IExternalPriceListService, ExternalPriceListService>();
+        services.AddScoped<IReservationService, ReservationService>();
         
         return services;
     }

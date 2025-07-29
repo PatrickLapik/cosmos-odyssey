@@ -12,7 +12,7 @@ public class Reservation : BaseModel
     public required string LastName { get; set; }
     
     public required double TotalPrice { get; set; }
-    public required long TotalTravelMinutes { get; set; }
+    public required double TotalTravelMinutes { get; set; }
 
-    public ICollection<CompanyRoute> CompanyRoutes { get; } = new List<CompanyRoute>();
+    public ICollection<CompanyRoute> CompanyRoutes { get; set; } = new List<CompanyRoute>();
 }

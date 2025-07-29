@@ -18,5 +18,7 @@ public class CompanyRoute : BaseModel
     public required Guid TravelPriceId { get; set; }
     public TravelPrice? TravelPrice { get; set; }
     
+    public required double Price {  get; set; }
+    
     public ICollection<Reservation> Reservations { get; } = new List<Reservation>();
 }

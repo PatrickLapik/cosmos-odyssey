@@ -103,6 +103,7 @@ public class ExternalPriceListService : BaseService, IExternalPriceListService
                     CompanyId = allCompanies.FirstOrDefault(c => c.Name == provider.Company.Name)!.Id,
                     RouteId = allRoutes.FirstOrDefault(r => r.ToDestination.Name == leg.RouteInfo.To.Name && r.FromDestination.Name == leg.RouteInfo.From.Name).Id,
                     TravelPriceId = travelPrice.Id,
+                    Price = provider.Price,
                 };
                 
                 await _companyRouteService.Save(companyRoute);

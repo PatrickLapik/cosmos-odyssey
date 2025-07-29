@@ -1,4 +1,5 @@
 using CosmosOdyssey.Models;
+using CosmosOdyssey.Services.Graph;
 
 namespace CosmosOdyssey.Services;
 
@@ -26,6 +27,7 @@ public class ExternalPriceListHostedService : BackgroundService
         using var scope = _services.CreateScope();
         var externalPriceListService = scope.ServiceProvider.GetRequiredService<IExternalPriceListService>();
         var apiLogService = scope.ServiceProvider.GetRequiredService<IApiLogService>();
+        var graphBuilderService = scope.ServiceProvider.GetRequiredService<IGraphBuilderService>();
             
         while (!stoppingToken.IsCancellationRequested)
         {
@@ -46,6 +48,8 @@ public class ExternalPriceListHostedService : BackgroundService
                     await externalPriceListService.SavePriceList(priceList);
                     validUntil = priceList.ValidUntil;
                 }
+                
+                await graphBuilderService.LoadGraph();
                 
                 var delay = validUntil.Value - DateTime.UtcNow;
 

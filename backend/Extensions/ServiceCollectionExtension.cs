@@ -1,6 +1,7 @@
 using CosmosOdyssey.Data;
 using CosmosOdyssey.Mappings;
 using CosmosOdyssey.Services;
+using CosmosOdyssey.Services.Graph;
 using Microsoft.EntityFrameworkCore;
 
 namespace CosmosOdyssey.Extensions;
@@ -15,6 +16,8 @@ public static class ServiceCollectionExtension
 
         services.AddAutoMapper(cfg => { }, typeof(MappingProfile));
 
+        services.AddSingleton<IGraphBuilderService, GraphBuilderService>();
+        services.AddScoped<IPathExplorerService, PathExplorerService>();
         services.AddScoped<IApiLogService, ApiLogService>();
         services.AddScoped<ICompanyService, CompanyService>();
         services.AddScoped<ICompanyRouteService, CompanyRouteService>();

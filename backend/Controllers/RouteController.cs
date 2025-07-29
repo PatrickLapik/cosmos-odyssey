@@ -9,20 +9,20 @@ namespace CosmosOdyssey.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class CompanyRouteController : ControllerBase
+public class RouteController : ControllerBase
 {
     private readonly ICompanyRouteService _companyRouteService;
 
-    public CompanyRouteController(ICompanyRouteService companyRouteService)
+    public RouteController(ICompanyRouteService companyRouteService)
     {
         _companyRouteService = companyRouteService;
     }
     
-    [HttpGet]
-    public async Task<IActionResult> GetBestRoute([FromQuery] int page)
+    [HttpGet("")]
+    public async Task<IActionResult> Get([FromQuery] Guid from, [FromQuery] Guid to)
     {
-        var companyRoutes = await _companyRouteService.GetPaginated(page);
-
-        return Ok(companyRoutes);
+        var routes = _companyRouteService.GetAllRoutes(from, to);
+        
+        return Ok(routes);
     }
 }

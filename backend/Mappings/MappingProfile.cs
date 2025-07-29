@@ -13,10 +13,16 @@ public class MappingProfile : Profile
         CreateMap<CompanyRoute, CompanyRouteResponse>()
             .ForMember(dest => dest.ValidUntil, opt => opt.MapFrom(src => src.TravelPrice.ValidUntil));
 
+        CreateMap<List<CompanyRoute>, FullCompanyRoutesResponse>()
+            .ForMember(dest => dest.CompanyRouteResponses, opt => opt.MapFrom(src => src))
+            .ForMember(dest => dest.TotalPrice, opt => opt.MapFrom(src => src.Sum(p => p.Price)))
+            .ForMember(dest => dest.TotalTravelMinutes,
+                opt => opt.MapFrom(src => (src.Last().TravelEnd - src.First().TravelStart).TotalMinutes));
+
         CreateMap<Company, CompanyResponse>();
         CreateMap<Route, RouteResponse>()
-            .ForMember(dest => dest.From, opt => opt.MapFrom(src => src.ToDestination.Name))
-            .ForMember(dest => dest.To, opt => opt.MapFrom(src => src.FromDestination.Name))
+            .ForMember(dest => dest.To, opt => opt.MapFrom(src => src.ToDestination.Name))
+            .ForMember(dest => dest.From, opt => opt.MapFrom(src => src.FromDestination.Name))
             .ForMember(dest => dest.ToId, opt => opt.MapFrom(src => src.ToDestinationId))
             .ForMember(dest => dest.FromId, opt => opt.MapFrom(src => src.FromDestinationId));
         

@@ -11,12 +11,13 @@ namespace CosmosOdyssey.Services;
 
 public class CompanyRouteService : BaseService, ICompanyRouteService
 {
-    
     private readonly IMapper _mapper;
+    private readonly IPathExplorerService _pathExplorerService;
     
-    public CompanyRouteService(AppDbContext context, IMapper mapper) : base(context)
+    public CompanyRouteService(AppDbContext context, IMapper mapper, IPathExplorerService pathExplorerService) : base(context)
     {
         _mapper = mapper;
+        _pathExplorerService = pathExplorerService;
     }
 
     public async Task Save(CompanyRoute route)
@@ -42,8 +43,10 @@ public class CompanyRouteService : BaseService, ICompanyRouteService
         return _mapper.Map<Pagination<CompanyRouteResponse>>(results);
     }
 
-    public async Task GetBestRoute(Guid fromId, Guid toId)
+    public List<FullCompanyRoutesResponse> GetAllRoutes(Guid fromId, Guid toId)
     {
+        var routes = _pathExplorerService.FindAllValidPaths(fromId, toId, DateTime.Now);
         
+        return routes.ConvertAll(r => _mapper.Map<FullCompanyRoutesResponse>(r));
     }
 }

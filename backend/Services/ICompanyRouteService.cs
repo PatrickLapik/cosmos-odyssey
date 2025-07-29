@@ -1,8 +1,13 @@
+using CosmosOdyssey.Dtos;
 using CosmosOdyssey.Models;
+using Pagination.EntityFrameworkCore.Extensions;
+using Route = CosmosOdyssey.Models.Route;
 
 namespace CosmosOdyssey.Services;
 
 public interface ICompanyRouteService
 {
     public Task Save(CompanyRoute route);
+    public Task<Pagination<CompanyRouteResponse>> GetPaginated(int page = 1);
+    public Task GetBestRoute(Guid fromId, Guid toId);
 }

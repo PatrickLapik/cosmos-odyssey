@@ -1,6 +1,7 @@
 using CosmosOdyssey.Data;
-using CosmosOdyssey.Models;
 using Microsoft.EntityFrameworkCore;
+using Pagination.EntityFrameworkCore.Extensions;
+using Route = CosmosOdyssey.Models.Route;
 
 namespace CosmosOdyssey.Services;
 
@@ -10,7 +11,7 @@ public class RouteService : BaseService, IRouteService
     {
     }
 
-    public async Task Save(Models.Route route)
+    public async Task Save(Route route)
     {
         var existing = await GetByFromAndTo(route.FromDestinationId, route.ToDestinationId);
         if (existing != null) return;
@@ -19,12 +20,12 @@ public class RouteService : BaseService, IRouteService
         await Context.SaveChangesAsync();
     }
 
-    public async Task<Models.Route?> GetByFromAndTo(Guid fromId, Guid toId)
+    public async Task<Route?> GetByFromAndTo(Guid fromId, Guid toId)
     {
         return await Context.Routes.Where(r => r.FromDestinationId == fromId && r.ToDestinationId == toId).FirstOrDefaultAsync();
     }
 
-    public async Task<List<Models.Route>> GetAll()
+    public async Task<List<Route>> GetAll()
     {
         return await Context.Routes.ToListAsync();
     }

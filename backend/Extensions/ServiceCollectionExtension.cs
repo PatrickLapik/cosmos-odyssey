@@ -1,4 +1,5 @@
 using CosmosOdyssey.Data;
+using CosmosOdyssey.Mappings;
 using CosmosOdyssey.Services;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,7 +12,8 @@ public static class ServiceCollectionExtension
         services.AddControllers();
         services.AddOpenApi();
         services.AddHttpClient();
-        
+
+        services.AddAutoMapper(cfg => { }, typeof(MappingProfile));
 
         services.AddScoped<IApiLogService, ApiLogService>();
         services.AddScoped<ICompanyService, CompanyService>();

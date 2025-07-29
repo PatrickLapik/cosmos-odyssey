@@ -7,6 +7,8 @@ namespace CosmosOdyssey.Services;
 public class BaseService
 {
     protected readonly AppDbContext Context;
+    
+    protected int PageSize = 20;
 
     protected BaseService(AppDbContext context)
     {

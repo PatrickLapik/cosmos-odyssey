@@ -1,19 +1,17 @@
-using System.ComponentModel.DataAnnotations.Schema;
-
 namespace CosmosOdyssey.Models;
 
 public class ExternalPriceList
 {
-    public Guid Id { get; set; } 
+    public Guid Id { get; set; }
     public DateTime ValidUntil { get; set; }
     public List<Leg> Legs { get; set; } = [];
 }
 
 public class Leg
 {
-   public Guid Id { get; set; }
-   public required RouteInfo RouteInfo { get; set; }
-   public List<Provider> Providers { get; set; } = [];
+    public Guid Id { get; set; }
+    public required RouteInfo RouteInfo { get; set; }
+    public List<Provider> Providers { get; set; } = [];
 }
 
 public class RouteInfo

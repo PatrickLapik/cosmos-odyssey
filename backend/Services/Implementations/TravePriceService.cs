@@ -1,6 +1,5 @@
 using CosmosOdyssey.Data;
 using CosmosOdyssey.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace CosmosOdyssey.Services;
 

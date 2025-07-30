@@ -1,17 +1,15 @@
 using CosmosOdyssey.Data;
-using CosmosOdyssey.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace CosmosOdyssey.Services;
 
 public class BaseService
 {
     protected readonly AppDbContext Context;
-    
+
     protected int PageSize = 20;
 
     protected BaseService(AppDbContext context)
     {
-        Context = context; 
+        Context = context;
     }
 }

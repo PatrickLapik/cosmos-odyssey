@@ -6,9 +6,10 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-var connectionString = builder.Configuration["ConnectionStrings:DatabaseConnection"]; 
+var connectionString = builder.Configuration["ConnectionStrings:DatabaseConnection"];
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString), optionsBuilder => optionsBuilder.UseMicrosoftJson()));
+    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString),
+        optionsBuilder => optionsBuilder.UseMicrosoftJson()));
 
 builder.Services.AddDependencyGroup(builder.Configuration);
 
@@ -17,10 +18,7 @@ builder.Services.AddHostedService<ExternalPriceListHostedService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
-}
+if (app.Environment.IsDevelopment()) app.MapOpenApi();
 
 app.UseHttpsRedirection();
 

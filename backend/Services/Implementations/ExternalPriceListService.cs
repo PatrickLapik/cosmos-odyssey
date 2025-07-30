@@ -8,17 +8,20 @@ namespace CosmosOdyssey.Services;
 
 public class ExternalPriceListService : BaseService, IExternalPriceListService
 {
+    private readonly IApiLogService _apiLogService;
+    private readonly ICompanyRouteService _companyRouteService;
+    private readonly ICompanyService _companyService;
+    private readonly IDestinationService _destinationService;
     private readonly HttpClient _httpClient;
     private readonly JsonSerializerOptions _jsonSerializerOptions;
-    private readonly IApiLogService _apiLogService;
-    
-    private readonly IRouteService _routeService;
-    private readonly IDestinationService _destinationService;
-    private readonly ICompanyService _companyService;
-    private readonly ITravelPriceService _travelPriceService;
-    private readonly ICompanyRouteService _companyRouteService;
 
-    public ExternalPriceListService(HttpClient httpClient, IApiLogService apiLogService, IDestinationService destinationService, IRouteService routeService,  ICompanyService companyService,  ITravelPriceService travelPriceService, ICompanyRouteService companyRouteService, AppDbContext context) : base(context)
+    private readonly IRouteService _routeService;
+    private readonly ITravelPriceService _travelPriceService;
+
+    public ExternalPriceListService(HttpClient httpClient, IApiLogService apiLogService,
+        IDestinationService destinationService, IRouteService routeService, ICompanyService companyService,
+        ITravelPriceService travelPriceService, ICompanyRouteService companyRouteService,
+        AppDbContext context) : base(context)
     {
         _httpClient = httpClient;
         _httpClient.BaseAddress = new Uri("https://cosmosodyssey.azurewebsites.net/api/v1.0/");
@@ -41,7 +44,7 @@ public class ExternalPriceListService : BaseService, IExternalPriceListService
                 .OrderBy(tp => tp.CreatedAt)
                 .Take(totalCount - 15)
                 .ToListAsync();
-            
+
             Context.TravelPrices.RemoveRange(toDelete);
             await Context.SaveChangesAsync();
         }
@@ -52,63 +55,61 @@ public class ExternalPriceListService : BaseService, IExternalPriceListService
         await SavePriceListToLogs(priceList);
 
         await NormalizePriceList(priceList);
-        
+
         await CleanUpPriceList();
     }
 
     public async Task<ExternalPriceList> FetchPriceList()
     {
         var response = await _httpClient.GetAsync("TravelPrices");
-        
+
         response.EnsureSuccessStatusCode();
-        
+
         var content = await response.Content.ReadAsStringAsync();
-        
+
         var priceList = JsonSerializer.Deserialize<ExternalPriceList>(content, _jsonSerializerOptions);
-        
-        if (priceList == null)
-        {
-            throw new Exception("Unable to deserialize");
-        }
-        
+
+        if (priceList == null) throw new Exception("Unable to deserialize");
+
         return priceList;
-    } 
+    }
 
     private async Task NormalizePriceList(ExternalPriceList priceList)
     {
         var legs = priceList.Legs;
-        
+
         await SyncDestinations(legs);
         await SyncRoutes(legs);
         await SyncCompanies(legs);
-        
+
         var travelPrice = new TravelPrice
         {
-            ValidUntil = priceList.ValidUntil,
+            ValidUntil = priceList.ValidUntil
         };
-        
+
         await _travelPriceService.Save(travelPrice);
 
         var allCompanies = await _companyService.GetAll();
         var allRoutes = await _routeService.GetAll();
-        
+
         foreach (var leg in priceList.Legs)
+        foreach (var provider in leg.Providers)
         {
-            foreach (var provider in leg.Providers)
+            var companyRoute = new CompanyRoute
             {
-                var companyRoute = new CompanyRoute
-                {
-                    TravelStart = provider.FlightStart,
-                    TravelEnd = provider.FlightEnd,
-                    CompanyId = allCompanies.FirstOrDefault(c => c.Name == provider.Company.Name)!.Id,
-                    RouteId = allRoutes.FirstOrDefault(r => r.ToDestination.Name == leg.RouteInfo.To.Name && r.FromDestination.Name == leg.RouteInfo.From.Name).Id,
-                    TravelPriceId = travelPrice.Id,
-                    Price = provider.Price,
-                };
-                
-                await _companyRouteService.Save(companyRoute);
-            } 
-        } 
+                TravelStart = provider.FlightStart,
+                TravelEnd = provider.FlightEnd,
+                CompanyId = allCompanies.FirstOrDefault(c => c.Name == provider.Company.Name)!.Id,
+                RouteId = allRoutes.FirstOrDefault(r =>
+                        r.ToDestination.Name == leg.RouteInfo.To.Name &&
+                        r.FromDestination.Name == leg.RouteInfo.From.Name)
+                    .Id,
+                TravelPriceId = travelPrice.Id,
+                Price = provider.Price
+            };
+
+            await _companyRouteService.Save(companyRoute);
+        }
     }
 
     private async Task SyncDestinations(List<Leg> legs)
@@ -122,7 +123,7 @@ public class ExternalPriceListService : BaseService, IExternalPriceListService
         {
             var newDestination = new Destination
             {
-                Name = destinationName,
+                Name = destinationName
             };
 
             await _destinationService.Save(newDestination);
@@ -136,7 +137,7 @@ public class ExternalPriceListService : BaseService, IExternalPriceListService
             {
                 From = l.RouteInfo.From.Name,
                 To = l.RouteInfo.To.Name,
-                Distance = l.RouteInfo.Distance,
+                l.RouteInfo.Distance
             })
             .Distinct()
             .ToList();
@@ -149,11 +150,11 @@ public class ExternalPriceListService : BaseService, IExternalPriceListService
             {
                 FromDestinationId = allDestinations.FirstOrDefault(d => d.Name == routeNames.From)!.Id,
                 ToDestinationId = allDestinations.FirstOrDefault(d => d.Name == routeNames.To)!.Id,
-                Distance = routeNames.Distance,
+                Distance = routeNames.Distance
             };
-            
+
             await _routeService.Save(newRoute);
-        } 
+        }
     }
 
     private async Task SyncCompanies(List<Leg> legs)
@@ -168,16 +169,16 @@ public class ExternalPriceListService : BaseService, IExternalPriceListService
         {
             var newCompany = new Company
             {
-                Name = companyName,
+                Name = companyName
             };
             await _companyService.Save(newCompany);
         }
     }
-    
+
     private async Task SavePriceListToLogs(ExternalPriceList priceList)
     {
         var apiLog = new ApiLog { ExternalPriceList = priceList };
-    
-        await _apiLogService.Save(apiLog); 
+
+        await _apiLogService.Save(apiLog);
     }
 }

@@ -1,4 +1,3 @@
-using CosmosOdyssey.Data;
 using CosmosOdyssey.Dtos;
 using CosmosOdyssey.Mappings;
 using CosmosOdyssey.Services;
@@ -6,7 +5,6 @@ using CosmosOdyssey.Services.Graph;
 using CosmosOdyssey.Services.Interfaces;
 using CosmosOdyssey.Validators;
 using FluentValidation;
-using Microsoft.EntityFrameworkCore;
 using SharpGrip.FluentValidation.AutoValidation.Mvc.Extensions;
 
 namespace CosmosOdyssey.Extensions;
@@ -35,7 +33,7 @@ public static class ServiceCollectionExtension
         services.AddScoped<IDestinationService, DestinationService>();
         services.AddScoped<IExternalPriceListService, ExternalPriceListService>();
         services.AddScoped<IReservationService, ReservationService>();
-        
+
         return services;
     }
 }

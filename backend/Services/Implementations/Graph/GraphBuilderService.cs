@@ -1,12 +1,11 @@
 using CosmosOdyssey.Data;
-using CosmosOdyssey.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace CosmosOdyssey.Services.Graph;
 
 public class GraphBuilderService : IGraphBuilderService
 {
-    private Dictionary<Guid, GraphNode> _graph;
+    private readonly Dictionary<Guid, GraphNode> _graph;
     private readonly IServiceScopeFactory _serviceScopeFactory;
 
     public GraphBuilderService(IServiceScopeFactory serviceScopeFactory)
@@ -19,12 +18,12 @@ public class GraphBuilderService : IGraphBuilderService
     {
         using var scope = _serviceScopeFactory.CreateScope();
         var context = scope.ServiceProvider.GetService<AppDbContext>();
-        
+
         var allValidCompanyRoutes = await context.CompanyRoutes
             .Include(cr => cr.Route)
-                .ThenInclude(r => r.FromDestination)
+            .ThenInclude(r => r.FromDestination)
             .Include(cr => cr.Route)
-                .ThenInclude(r => r.ToDestination)
+            .ThenInclude(r => r.ToDestination)
             .Include(cr => cr.Company)
             .Include(cr => cr.TravelPrice)
             .Where(cr => cr.TravelPrice.ValidUntil >= DateTime.Now)
@@ -47,10 +46,13 @@ public class GraphBuilderService : IGraphBuilderService
                 To = toId,
                 CompanyRoute = route
             };
-            
+
             fromNode.Edges.Add(edge);
         }
     }
-    
-    public Dictionary<Guid, GraphNode> GetGraph() =>  _graph;
+
+    public Dictionary<Guid, GraphNode> GetGraph()
+    {
+        return _graph;
+    }
 }

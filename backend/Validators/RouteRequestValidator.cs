@@ -9,5 +9,5 @@ public class RouteRequestValidator : AbstractValidator<RouteRequest>
     {
         RuleFor(rr => rr.FromId).NotEmpty().WithMessage("FromId cannot be null");
         RuleFor(rr => rr.ToId).NotEmpty().WithMessage("ToId cannot be null");
-    } 
+    }
 }

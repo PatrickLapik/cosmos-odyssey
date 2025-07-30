@@ -1,5 +1,3 @@
-using CosmosOdyssey.Models;
-using Pagination.EntityFrameworkCore.Extensions;
 using Route = CosmosOdyssey.Models.Route;
 
 namespace CosmosOdyssey.Services;

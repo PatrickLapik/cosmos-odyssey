@@ -4,15 +4,13 @@ using CosmosOdyssey.Dtos;
 using CosmosOdyssey.Models;
 using CosmosOdyssey.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using Pagination.EntityFrameworkCore.Extensions;
-using Route = CosmosOdyssey.Models.Route;
 
 namespace CosmosOdyssey.Services;
 
 public class ReservationService : BaseService, IReservationService
 {
     private readonly IMapper _mapper;
-    
+
     public ReservationService(AppDbContext context, IMapper mapper) : base(context)
     {
         _mapper = mapper;
@@ -23,16 +21,16 @@ public class ReservationService : BaseService, IReservationService
         var companyRoutes = await Context.CompanyRoutes
             .Where(cr => reservationRequest.CompanyRouteIds.Contains(cr.Id))
             .ToListAsync();
-        
+
         var newReservation = new Reservation
         {
             FirstName = reservationRequest.FirstName,
             LastName = reservationRequest.LastName,
             CompanyRoutes = companyRoutes,
             TotalPrice = companyRoutes.Sum(cr => cr.Price),
-            TotalTravelMinutes = (companyRoutes.Last().TravelEnd - companyRoutes.First().TravelStart).TotalMinutes,
+            TotalTravelMinutes = (companyRoutes.Last().TravelEnd - companyRoutes.First().TravelStart).TotalMinutes
         };
-        
+
         await Context.Reservations.AddAsync(newReservation);
         await Context.SaveChangesAsync();
     }
@@ -41,16 +39,16 @@ public class ReservationService : BaseService, IReservationService
     {
         var reservations = await Context.Reservations
             .Include(r => r.CompanyRoutes)
-                .ThenInclude(r => r.Company)
+            .ThenInclude(r => r.Company)
             .Include(r => r.CompanyRoutes)
-                .ThenInclude(r => r.Route)
-                    .ThenInclude(cr => cr.ToDestination)
+            .ThenInclude(r => r.Route)
+            .ThenInclude(cr => cr.ToDestination)
             .Include(r => r.CompanyRoutes)
-                .ThenInclude(r => r.Route)
-                    .ThenInclude(cr => cr.FromDestination)
+            .ThenInclude(r => r.Route)
+            .ThenInclude(cr => cr.FromDestination)
             .Where(cr => cr.FirstName.ToLower() == firstName.ToLower() && cr.LastName.ToLower() == lastName.ToLower())
             .ToListAsync();
-        
+
         return _mapper.Map<List<Reservation>, List<ReservationResponse>>(reservations);
     }
 }

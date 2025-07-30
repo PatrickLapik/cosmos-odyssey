@@ -1,5 +1,5 @@
-using Microsoft.EntityFrameworkCore;
 using CosmosOdyssey.Models;
+using Microsoft.EntityFrameworkCore;
 using Route = CosmosOdyssey.Models.Route;
 
 namespace CosmosOdyssey.Data;
@@ -7,29 +7,7 @@ namespace CosmosOdyssey.Data;
 public class AppDbContext : DbContext
 {
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
-    { }
-    
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        base.OnModelCreating(modelBuilder);
-
-        modelBuilder.Entity<Route>()
-            .HasIndex(r => new { r.FromDestinationId, r.ToDestinationId })
-            .IsUnique();
-        
-        modelBuilder.Entity<Route>()
-            .HasOne(r => r.FromDestination)
-            .WithMany(d => d.RoutesFromHere)
-            .HasForeignKey(r => r.FromDestinationId)
-            .OnDelete(DeleteBehavior.Restrict);
-        
-        modelBuilder.Entity<Route>()
-            .HasOne(r => r.ToDestination)
-            .WithMany(d => d.RoutesToHere)
-            .HasForeignKey(r => r.ToDestinationId)
-            .OnDelete(DeleteBehavior.Restrict);
-
-        modelBuilder.Entity<ApiLog>().Property(e => e.ExternalPriceList).HasColumnType("json");
     }
 
     public DbSet<Company> Companies { get; set; }
@@ -39,7 +17,30 @@ public class AppDbContext : DbContext
     public DbSet<CompanyRoute> CompanyRoutes { get; set; }
     public DbSet<TravelPrice> TravelPrices { get; set; }
     public DbSet<ApiLog> ApiLogs { get; set; }
-    
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+
+        modelBuilder.Entity<Route>()
+            .HasIndex(r => new { r.FromDestinationId, r.ToDestinationId })
+            .IsUnique();
+
+        modelBuilder.Entity<Route>()
+            .HasOne(r => r.FromDestination)
+            .WithMany(d => d.RoutesFromHere)
+            .HasForeignKey(r => r.FromDestinationId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Route>()
+            .HasOne(r => r.ToDestination)
+            .WithMany(d => d.RoutesToHere)
+            .HasForeignKey(r => r.ToDestinationId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<ApiLog>().Property(e => e.ExternalPriceList).HasColumnType("json");
+    }
+
     public override int SaveChanges()
     {
         UpdateTimestamps();
@@ -57,7 +58,6 @@ public class AppDbContext : DbContext
         var now = DateTime.UtcNow;
 
         foreach (var entry in ChangeTracker.Entries<BaseModel>())
-        {
             if (entry.State == EntityState.Added)
             {
                 entry.Entity.CreatedAt = now;
@@ -68,6 +68,5 @@ public class AppDbContext : DbContext
                 entry.Property(e => e.CreatedAt).IsModified = false;
                 entry.Entity.UpdatedAt = now;
             }
-        }
     }
 }

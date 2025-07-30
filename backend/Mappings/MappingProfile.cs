@@ -1,7 +1,6 @@
 using AutoMapper;
 using CosmosOdyssey.Dtos;
 using CosmosOdyssey.Models;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Pagination.EntityFrameworkCore.Extensions;
 using Route = CosmosOdyssey.Models.Route;
 
@@ -27,26 +26,29 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.CompanyRoutes, opt => opt.MapFrom(src => src.CompanyRoutes));
 
         CreateMap<Company, CompanyResponse>();
-        
+        CreateMap<Destination, DestinationResponse>();
+
         CreateMap<CompanyRoute, RouteResponse>()
             .ForMember(dest => dest.FromId, opt => opt.MapFrom(src => src.Route.FromDestinationId))
             .ForMember(dest => dest.ToId, opt => opt.MapFrom(src => src.Route.ToDestinationId))
             .ForMember(dest => dest.From, opt => opt.MapFrom(src => src.Route.FromDestination.Name))
             .ForMember(dest => dest.To, opt => opt.MapFrom(src => src.Route.ToDestination.Name));
-        
+
         CreateMap<Route, RouteResponse>()
             .ForMember(dest => dest.To, opt => opt.MapFrom(src => src.ToDestination.Name))
             .ForMember(dest => dest.From, opt => opt.MapFrom(src => src.FromDestination.Name))
             .ForMember(dest => dest.ToId, opt => opt.MapFrom(src => src.ToDestinationId))
             .ForMember(dest => dest.FromId, opt => opt.MapFrom(src => src.FromDestinationId));
-        
+
         CreateMap(typeof(Pagination<>), typeof(Pagination<>)).ConvertUsing(typeof(PaginationTypeConverter<,>));
     }
 }
 
-public class PaginationTypeConverter<TSource, TDestination> : ITypeConverter<Pagination<TSource>, Pagination<TDestination>>
+public class
+    PaginationTypeConverter<TSource, TDestination> : ITypeConverter<Pagination<TSource>, Pagination<TDestination>>
 {
-    public Pagination<TDestination> Convert(Pagination<TSource> source, Pagination<TDestination> destination, ResolutionContext context)
+    public Pagination<TDestination> Convert(Pagination<TSource> source, Pagination<TDestination> destination,
+        ResolutionContext context)
     {
         var mappedItems = context.Mapper.Map<List<TDestination>>(source.Results);
 
@@ -57,7 +59,7 @@ public class PaginationTypeConverter<TSource, TDestination> : ITypeConverter<Pag
             NextPage = source.NextPage,
             TotalItems = source.TotalItems,
             TotalPages = source.TotalPages,
-            Results = mappedItems,
+            Results = mappedItems
         };
     }
 }

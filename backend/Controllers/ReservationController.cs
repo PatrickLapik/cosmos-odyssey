@@ -1,12 +1,6 @@
-using CosmosOdyssey.Data;
 using CosmosOdyssey.Dtos;
-using CosmosOdyssey.Models;
-using CosmosOdyssey.Services;
 using CosmosOdyssey.Services.Interfaces;
-using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
-using Pagination.EntityFrameworkCore.Extensions;
-using Route = CosmosOdyssey.Models.Route;
 
 namespace CosmosOdyssey.Controllers;
 
@@ -22,14 +16,14 @@ public class ReservationController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> SaveReservation([FromBody] ReservationRequest request)
+    public async Task<IActionResult> Save([FromBody] ReservationRequest request)
     {
         await _reservationService.Save(request);
         return Ok();
     }
 
     [HttpGet("{firstName}/{lastName}")]
-    public async Task<IActionResult> GetReservation(string firstName, string lastName)
+    public async Task<IActionResult> Get(string firstName, string lastName)
     {
         var reservations = await _reservationService.GetByFirstAndLastName(firstName, lastName);
         return Ok(reservations);

@@ -1,4 +1,6 @@
+using AutoMapper;
 using CosmosOdyssey.Data;
+using CosmosOdyssey.Dtos;
 using CosmosOdyssey.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -6,15 +8,18 @@ namespace CosmosOdyssey.Services;
 
 public class DestinationService : BaseService, IDestinationService
 {
-    public DestinationService(AppDbContext dbContext) : base(dbContext)
+    private readonly IMapper _mapper;
+
+    public DestinationService(AppDbContext dbContext, IMapper mapper) : base(dbContext)
     {
+        _mapper = mapper;
     }
 
     public async Task Save(Destination destination)
     {
         var existing = await GetByName(destination.Name);
-        if (existing != null) return;        
-        
+        if (existing != null) return;
+
         await Context.Destinations.AddAsync(destination);
         await Context.SaveChangesAsync();
     }
@@ -24,8 +29,10 @@ public class DestinationService : BaseService, IDestinationService
         return await Context.Destinations.Where(d => d.Name == name).FirstOrDefaultAsync();
     }
 
-    public async Task<List<Destination>> GetAll()
+    public async Task<List<DestinationResponse>> GetAll()
     {
-        return await Context.Destinations.ToListAsync();
+        var destinations = await Context.Destinations.ToListAsync();
+
+        return _mapper.Map<List<Destination>, List<DestinationResponse>>(destinations);
     }
 }

@@ -14,21 +14,43 @@ public class ReservationRequestValidator : AbstractValidator<ReservationRequest>
         _context = context;
         
         RuleFor(rr => rr.CompanyRouteIds)
-            .NotEmpty().WithMessage("CompanyRouteIds are required")
+            .NotEmpty()
             .MustAsync(AllCompanyRoutesExist)
-            .WithMessage("One or more RouteIds dont exist");
+            .WithMessage("One or more RouteIds dont exist")
+            .MustAsync(CompanyRoutesAreStillValid)
+            .WithMessage("One or more RouteIds are not available for booking");
         
-        RuleFor(rr => rr.FirstName).NotEmpty().WithMessage("FirstName is required");
-        RuleFor(rr => rr.LastName).NotEmpty().WithMessage("LastName is required");
-    } 
+        RuleFor(rr => rr.FirstName).NotEmpty();
+        RuleFor(rr => rr.LastName).NotEmpty();
+
+        RuleFor(rr => rr)
+            .MustAsync(NoDuplicates)
+            .WithMessage("This user has already booked one or more of the selected routes");
+    }
+
+    private async Task<bool> NoDuplicates(ReservationRequest request, CancellationToken cancellationToken)
+    {
+        return !await _context.Reservations
+            .Where(r => (r.FirstName == request.FirstName) && (r.LastName == request.LastName))
+            .AnyAsync(r =>
+                r.CompanyRoutes.Any(cr => request.CompanyRouteIds.Contains(cr.Id)), cancellationToken);
+    }
     
     private async Task<bool> AllCompanyRoutesExist(List<Guid> companyRouteIds, CancellationToken cancellationToken)
     {
-        var existingIds = await _context.CompanyRoutes
-            .Where(cr => companyRouteIds.Contains(cr.Id))
-            .Select(cr => cr.Id)
-            .ToListAsync(cancellationToken);
+        var existingCount = await _context.CompanyRoutes
+            .CountAsync(r => companyRouteIds.Contains(r.Id), cancellationToken);
 
-        return companyRouteIds.All(id => existingIds.Contains(id));
-    }    
+        return existingCount == companyRouteIds.Count;
+    }
+
+    private async Task<bool> CompanyRoutesAreStillValid(List<Guid> companyRouteIds, CancellationToken cancellationToken)
+    {
+        var validExistingRecordsCount = await _context.CompanyRoutes
+            .Include(cr => cr.TravelPrice)
+            .Where(cr => companyRouteIds.Contains(cr.Id) && cr.TravelPrice.ValidUntil >= DateTime.Now)
+            .CountAsync(cancellationToken);
+        
+        return validExistingRecordsCount == companyRouteIds.Count;
+    }
 }

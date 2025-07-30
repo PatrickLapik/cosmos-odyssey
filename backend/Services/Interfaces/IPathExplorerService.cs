@@ -1,6 +1,6 @@
 using CosmosOdyssey.Models;
 
-namespace CosmosOdyssey.Services;
+namespace CosmosOdyssey.Services.Interfaces;
 
 public interface IPathExplorerService
 {

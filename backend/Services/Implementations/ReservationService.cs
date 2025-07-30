@@ -1,21 +1,15 @@
 using AutoMapper;
 using CosmosOdyssey.Data;
-using CosmosOdyssey.Dtos;
+using CosmosOdyssey.Dtos.Request;
+using CosmosOdyssey.Dtos.Response;
 using CosmosOdyssey.Models;
 using CosmosOdyssey.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace CosmosOdyssey.Services;
+namespace CosmosOdyssey.Services.Implementations;
 
-public class ReservationService : BaseService, IReservationService
+public class ReservationService(AppDbContext context, IMapper mapper) : BaseService(context), IReservationService
 {
-    private readonly IMapper _mapper;
-
-    public ReservationService(AppDbContext context, IMapper mapper) : base(context)
-    {
-        _mapper = mapper;
-    }
-
     public async Task Save(ReservationRequest reservationRequest)
     {
         var companyRoutes = await Context.CompanyRoutes
@@ -49,6 +43,6 @@ public class ReservationService : BaseService, IReservationService
             .Where(cr => cr.FirstName.ToLower() == firstName.ToLower() && cr.LastName.ToLower() == lastName.ToLower())
             .ToListAsync();
 
-        return _mapper.Map<List<Reservation>, List<ReservationResponse>>(reservations);
+        return mapper.Map<List<Reservation>, List<ReservationResponse>>(reservations);
     }
 }

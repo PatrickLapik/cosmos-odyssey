@@ -1,22 +1,16 @@
 using CosmosOdyssey.Data;
+using CosmosOdyssey.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace CosmosOdyssey.Services.Graph;
+namespace CosmosOdyssey.Services.Implementations.Graph;
 
-public class GraphBuilderService : IGraphBuilderService
+public class GraphBuilderService(IServiceScopeFactory serviceScopeFactory) : IGraphBuilderService
 {
-    private readonly Dictionary<Guid, GraphNode> _graph;
-    private readonly IServiceScopeFactory _serviceScopeFactory;
-
-    public GraphBuilderService(IServiceScopeFactory serviceScopeFactory)
-    {
-        _serviceScopeFactory = serviceScopeFactory;
-        _graph = new Dictionary<Guid, GraphNode>();
-    }
+    private readonly Dictionary<Guid, GraphNode> _graph = new();
 
     public async Task LoadGraph()
     {
-        using var scope = _serviceScopeFactory.CreateScope();
+        using var scope = serviceScopeFactory.CreateScope();
         var context = scope.ServiceProvider.GetService<AppDbContext>();
 
         var allValidCompanyRoutes = await context.CompanyRoutes

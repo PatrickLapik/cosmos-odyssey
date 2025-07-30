@@ -1,5 +1,6 @@
 using CosmosOdyssey.Data;
 using CosmosOdyssey.Dtos;
+using CosmosOdyssey.Dtos.Request;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 

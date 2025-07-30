@@ -1,6 +1,7 @@
 using CosmosOdyssey.Data;
 using CosmosOdyssey.Extensions;
 using CosmosOdyssey.Services;
+using CosmosOdyssey.Services.Implementations;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);

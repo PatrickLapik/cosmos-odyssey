@@ -1,24 +1,17 @@
 using AutoMapper;
 using CosmosOdyssey.Data;
-using CosmosOdyssey.Dtos;
+using CosmosOdyssey.Dtos.Request;
+using CosmosOdyssey.Dtos.Response;
 using CosmosOdyssey.Models;
+using CosmosOdyssey.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Pagination.EntityFrameworkCore.Extensions;
 
-namespace CosmosOdyssey.Services;
+namespace CosmosOdyssey.Services.Implementations;
 
-public class CompanyRouteService : BaseService, ICompanyRouteService
+public class CompanyRouteService(AppDbContext context, IMapper mapper, IPathExplorerService pathExplorerService)
+    : BaseService(context), ICompanyRouteService
 {
-    private readonly IMapper _mapper;
-    private readonly IPathExplorerService _pathExplorerService;
-
-    public CompanyRouteService(AppDbContext context, IMapper mapper, IPathExplorerService pathExplorerService) :
-        base(context)
-    {
-        _mapper = mapper;
-        _pathExplorerService = pathExplorerService;
-    }
-
     public async Task Save(CompanyRoute route)
     {
         var existing = await Context.Destinations.AnyAsync(d => d.Id == route.Id);
@@ -39,13 +32,13 @@ public class CompanyRouteService : BaseService, ICompanyRouteService
             .Include(cr => cr.TravelPrice)
             .AsPaginationAsync(page, PageSize);
 
-        return _mapper.Map<Pagination<CompanyRouteResponse>>(results);
+        return mapper.Map<Pagination<CompanyRouteResponse>>(results);
     }
 
     public List<FullCompanyRoutesResponse> GetAllRoutes(RouteRequest request)
     {
-        var routes = _pathExplorerService.FindAllValidPaths(request.FromId, request.ToId, DateTime.Now);
-        var mappedRoutes = routes.ConvertAll(r => _mapper.Map<FullCompanyRoutesResponse>(r));
+        var routes = pathExplorerService.FindAllValidPaths(request.FromId, request.ToId, DateTime.Now);
+        var mappedRoutes = routes.ConvertAll(r => mapper.Map<FullCompanyRoutesResponse>(r));
 
         return mappedRoutes
             .Where(route =>

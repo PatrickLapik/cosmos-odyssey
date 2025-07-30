@@ -1,4 +1,4 @@
-namespace CosmosOdyssey.Dtos;
+namespace CosmosOdyssey.Dtos.Response;
 
 public class DestinationResponse
 {

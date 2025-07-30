@@ -1,8 +1,9 @@
-using CosmosOdyssey.Dtos;
+using CosmosOdyssey.Dtos.Request;
+using CosmosOdyssey.Dtos.Response;
 using CosmosOdyssey.Models;
 using Pagination.EntityFrameworkCore.Extensions;
 
-namespace CosmosOdyssey.Services;
+namespace CosmosOdyssey.Services.Interfaces;
 
 public interface ICompanyRouteService
 {

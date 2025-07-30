@@ -1,29 +1,21 @@
-using CosmosOdyssey.Services.Graph;
+using CosmosOdyssey.Services.Interfaces;
 
-namespace CosmosOdyssey.Services;
+namespace CosmosOdyssey.Services.Implementations;
 
-public class ExternalPriceListHostedService : BackgroundService
+public class ExternalPriceListHostedService(ILogger<ExternalPriceListHostedService> logger, IServiceProvider services)
+    : BackgroundService
 {
-    private readonly ILogger<ExternalPriceListHostedService> _logger;
-    private readonly IServiceProvider _services;
-
-    public ExternalPriceListHostedService(ILogger<ExternalPriceListHostedService> logger, IServiceProvider services)
-    {
-        _logger = logger;
-        _services = services;
-    }
-
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        _logger.LogInformation("Price List Api Hosted Service is starting...");
+        logger.LogInformation("Price List Api Hosted Service is starting...");
         await DoWork(stoppingToken);
     }
 
     private async Task DoWork(CancellationToken stoppingToken)
     {
-        _logger.LogInformation("Price List Api Hosted Service is working...");
+        logger.LogInformation("Price List Api Hosted Service is working...");
 
-        using var scope = _services.CreateScope();
+        using var scope = services.CreateScope();
         var externalPriceListService = scope.ServiceProvider.GetRequiredService<IExternalPriceListService>();
         var apiLogService = scope.ServiceProvider.GetRequiredService<IApiLogService>();
         var graphBuilderService = scope.ServiceProvider.GetRequiredService<IGraphBuilderService>();
@@ -55,7 +47,7 @@ public class ExternalPriceListHostedService : BackgroundService
             }
             catch (Exception ex)
             {
-                _logger.LogInformation("Price List Api Hosted Service stopping due to an Error \n Error details: {ex}",
+                logger.LogInformation("Price List Api Hosted Service stopping due to an Error \n Error details: {ex}",
                     ex.Message);
             }
         }

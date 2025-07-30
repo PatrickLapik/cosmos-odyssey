@@ -1,24 +1,19 @@
 using CosmosOdyssey.Dtos;
+using CosmosOdyssey.Dtos.Request;
 using CosmosOdyssey.Services;
+using CosmosOdyssey.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CosmosOdyssey.Controllers;
 
 [ApiController]
 [Route("routes")]
-public class RouteController : ControllerBase
+public class RouteController(ICompanyRouteService companyRouteService) : ControllerBase
 {
-    private readonly ICompanyRouteService _companyRouteService;
-
-    public RouteController(ICompanyRouteService companyRouteService)
-    {
-        _companyRouteService = companyRouteService;
-    }
-
     [HttpPost]
     public async Task<IActionResult> Get([FromBody] RouteRequest request)
     {
-        var routes = _companyRouteService.GetAllRoutes(request);
+        var routes = companyRouteService.GetAllRoutes(request);
 
         return Ok(routes);
     }

@@ -1,15 +1,12 @@
 using CosmosOdyssey.Data;
 using CosmosOdyssey.Models;
+using CosmosOdyssey.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace CosmosOdyssey.Services;
+namespace CosmosOdyssey.Services.Implementations;
 
-public class ApiLogService : BaseService, IApiLogService
+public class ApiLogService(AppDbContext context) : BaseService(context), IApiLogService
 {
-    public ApiLogService(AppDbContext context) : base(context)
-    {
-    }
-
     public async Task Save(ApiLog apiLog)
     {
         await Context.ApiLogs.AddAsync(apiLog);

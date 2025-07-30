@@ -1,6 +1,6 @@
 using Route = CosmosOdyssey.Models.Route;
 
-namespace CosmosOdyssey.Services;
+namespace CosmosOdyssey.Services.Interfaces;
 
 public interface IRouteService
 {

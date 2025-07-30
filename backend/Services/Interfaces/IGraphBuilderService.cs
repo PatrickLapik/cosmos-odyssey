@@ -1,4 +1,6 @@
-namespace CosmosOdyssey.Services.Graph;
+using CosmosOdyssey.Services.Implementations.Graph;
+
+namespace CosmosOdyssey.Services.Interfaces;
 
 public interface IGraphBuilderService
 {

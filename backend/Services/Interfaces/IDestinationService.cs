@@ -1,7 +1,7 @@
-using CosmosOdyssey.Dtos;
+using CosmosOdyssey.Dtos.Response;
 using CosmosOdyssey.Models;
 
-namespace CosmosOdyssey.Services;
+namespace CosmosOdyssey.Services.Interfaces;
 
 public interface IDestinationService
 {

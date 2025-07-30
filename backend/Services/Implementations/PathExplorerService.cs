@@ -1,20 +1,13 @@
 using CosmosOdyssey.Models;
-using CosmosOdyssey.Services.Graph;
+using CosmosOdyssey.Services.Interfaces;
 
-namespace CosmosOdyssey.Services;
+namespace CosmosOdyssey.Services.Implementations;
 
-public class PathExplorerService : IPathExplorerService
+public class PathExplorerService(IGraphBuilderService graphBuilderService) : IPathExplorerService
 {
-    private readonly IGraphBuilderService _graphBuilderService;
-
-    public PathExplorerService(IGraphBuilderService graphBuilderService)
-    {
-        _graphBuilderService = graphBuilderService;
-    }
-
     public List<List<CompanyRoute>> FindAllValidPaths(Guid fromId, Guid toId, DateTime startTime)
     {
-        var graph = _graphBuilderService.GetGraph();
+        var graph = graphBuilderService.GetGraph();
         var results = new List<List<CompanyRoute>>();
 
         void DFS(Guid current, DateTime currentTime, List<CompanyRoute> path)

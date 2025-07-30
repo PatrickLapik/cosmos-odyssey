@@ -1,6 +1,6 @@
 using CosmosOdyssey.Models;
 
-namespace CosmosOdyssey.Services.Graph;
+namespace CosmosOdyssey.Services.Implementations.Graph;
 
 public class GraphEdge
 {

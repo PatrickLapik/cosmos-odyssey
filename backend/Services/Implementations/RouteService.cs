@@ -1,15 +1,12 @@
 using CosmosOdyssey.Data;
+using CosmosOdyssey.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Route = CosmosOdyssey.Models.Route;
 
-namespace CosmosOdyssey.Services;
+namespace CosmosOdyssey.Services.Implementations;
 
-public class RouteService : BaseService, IRouteService
+public class RouteService(AppDbContext context) : BaseService(context), IRouteService
 {
-    public RouteService(AppDbContext context) : base(context)
-    {
-    }
-
     public async Task Save(Route route)
     {
         var existing = await GetByFromAndTo(route.FromDestinationId, route.ToDestinationId);

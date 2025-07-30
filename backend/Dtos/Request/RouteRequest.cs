@@ -1,4 +1,4 @@
-namespace CosmosOdyssey.Dtos;
+namespace CosmosOdyssey.Dtos.Request;
 
 public class RouteRequest
 {

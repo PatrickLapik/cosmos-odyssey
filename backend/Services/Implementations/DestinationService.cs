@@ -1,20 +1,14 @@
 using AutoMapper;
 using CosmosOdyssey.Data;
-using CosmosOdyssey.Dtos;
+using CosmosOdyssey.Dtos.Response;
 using CosmosOdyssey.Models;
+using CosmosOdyssey.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace CosmosOdyssey.Services;
+namespace CosmosOdyssey.Services.Implementations;
 
-public class DestinationService : BaseService, IDestinationService
+public class DestinationService(AppDbContext dbContext, IMapper mapper) : BaseService(dbContext), IDestinationService
 {
-    private readonly IMapper _mapper;
-
-    public DestinationService(AppDbContext dbContext, IMapper mapper) : base(dbContext)
-    {
-        _mapper = mapper;
-    }
-
     public async Task Save(Destination destination)
     {
         var existing = await GetByName(destination.Name);
@@ -33,6 +27,6 @@ public class DestinationService : BaseService, IDestinationService
     {
         var destinations = await Context.Destinations.ToListAsync();
 
-        return _mapper.Map<List<Destination>, List<DestinationResponse>>(destinations);
+        return mapper.Map<List<Destination>, List<DestinationResponse>>(destinations);
     }
 }

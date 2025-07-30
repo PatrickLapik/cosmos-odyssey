@@ -1,14 +1,11 @@
 using CosmosOdyssey.Data;
 using CosmosOdyssey.Models;
+using CosmosOdyssey.Services.Interfaces;
 
-namespace CosmosOdyssey.Services;
+namespace CosmosOdyssey.Services.Implementations;
 
-public class TravePriceService : BaseService, ITravelPriceService
+public class TravePriceService(AppDbContext context) : BaseService(context), ITravelPriceService
 {
-    public TravePriceService(AppDbContext context) : base(context)
-    {
-    }
-
     public async Task Save(TravelPrice travelPrice)
     {
         await Context.TravelPrices.AddAsync(travelPrice);

@@ -1,10 +1,11 @@
 using System.Text.Json;
 using CosmosOdyssey.Data;
 using CosmosOdyssey.Models;
+using CosmosOdyssey.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Route = CosmosOdyssey.Models.Route;
 
-namespace CosmosOdyssey.Services;
+namespace CosmosOdyssey.Services.Implementations;
 
 public class ExternalPriceListService : BaseService, IExternalPriceListService
 {

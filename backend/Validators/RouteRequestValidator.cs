@@ -1,4 +1,5 @@
 using CosmosOdyssey.Dtos;
+using CosmosOdyssey.Dtos.Request;
 using FluentValidation;
 
 namespace CosmosOdyssey.Validators;

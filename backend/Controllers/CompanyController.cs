@@ -1,23 +1,17 @@
 using CosmosOdyssey.Services;
+using CosmosOdyssey.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CosmosOdyssey.Controllers;
 
 [ApiController]
 [Route("companies")]
-public class CompanyController : ControllerBase
+public class CompanyController(ICompanyService companyService) : ControllerBase
 {
-    private readonly ICompanyService _companyService;
-
-    public CompanyController(ICompanyService companyService)
-    {
-        _companyService = companyService;
-    }
-
     [HttpGet]
     public async Task<IActionResult> Get()
     {
-        var companies = await _companyService.GetAll();
+        var companies = await companyService.GetAll();
         return Ok(companies);
     }
 }

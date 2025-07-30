@@ -1,4 +1,4 @@
-namespace CosmosOdyssey.Services.Graph;
+namespace CosmosOdyssey.Services.Implementations.Graph;
 
 public class GraphNode
 {

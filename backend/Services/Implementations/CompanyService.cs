@@ -1,20 +1,14 @@
 using AutoMapper;
 using CosmosOdyssey.Data;
-using CosmosOdyssey.Dtos;
+using CosmosOdyssey.Dtos.Response;
 using CosmosOdyssey.Models;
+using CosmosOdyssey.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace CosmosOdyssey.Services;
+namespace CosmosOdyssey.Services.Implementations;
 
-public class CompanyService : BaseService, ICompanyService
+public class CompanyService(AppDbContext context, IMapper mapper) : BaseService(context), ICompanyService
 {
-    private readonly IMapper _mapper;
-
-    public CompanyService(AppDbContext context, IMapper mapper) : base(context)
-    {
-        _mapper = mapper;
-    }
-
     public async Task Save(Company company)
     {
         var existing = await Context.Companies.AnyAsync(c => c.Name == company.Name);
@@ -33,6 +27,6 @@ public class CompanyService : BaseService, ICompanyService
     {
         var companies = await Context.Companies.ToListAsync();
 
-        return _mapper.Map<List<Company>, List<CompanyResponse>>(companies);
+        return mapper.Map<List<Company>, List<CompanyResponse>>(companies);
     }
 }

@@ -11,11 +11,29 @@ services:
       - "${BACKEND_PORT}:${BACKEND_PORT}"
     restart: always
     command: dotnet run
+    depends_on:
+      - db
     volumes:
       - ./backend:/backend
-      - ~/.nuget/packages:/root/.nuget/packages
     profiles:
       - backend
+
+  frontend:
+    build:
+      context: .
+      dockerfile: docker/frontend.dockerfile
+    container_name: cosmos-frontend
+    working_dir: "/frontend"
+    env_file:
+      - ./frontend/.env
+    ports:
+      - "${VITE_FRONTEND_PORT}:${VITE_FRONTEND_PORT}"
+    restart: always
+    command: npm run dev
+    volumes:
+      - ./frontend:/frontend
+    profiles:
+      - frontend 
 
   db:
     image: mariadb:11.8.2

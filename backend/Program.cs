@@ -18,10 +18,13 @@ builder.Services.AddHostedService<ExternalPriceListHostedService>();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment()) app.MapOpenApi();
 
 app.UseHttpsRedirection();
+
+app.UseRouting();
+
+app.UseCors("AllowFrontend");
 
 app.UseAuthorization();
 

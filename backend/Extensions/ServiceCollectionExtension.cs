@@ -20,6 +20,16 @@ public static class ServiceCollectionExtension
         services.AddHttpClient();
         services.AddFluentValidationAutoValidation();
 
+        services.AddCors(options =>
+        {
+            options.AddPolicy("AllowFrontend", policy =>
+            {
+                policy.WithOrigins("http://cosmos-frontend:3000", "http://localhost:3000")
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
+            });
+        });
+
         services.AddAutoMapper(cfg => { }, typeof(MappingProfile));
 
         services.AddScoped<IValidator<RouteRequest>, RouteRequestValidator>();

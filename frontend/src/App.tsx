@@ -2,15 +2,18 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider } from "./components/ThemeProvider";
 import { RouterProvider } from "react-router";
 import { router } from "./routes";
+import { ValidTimerProvider } from "./providers/ValidTimerProvider";
 
 const queryClient = new QueryClient();
 
 export default function App() {
-  return (
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider defaultTheme="dark">
-        <RouterProvider router={router} />
-      </ThemeProvider>
-    </QueryClientProvider>
-  );
+    return (
+        <QueryClientProvider client={queryClient}>
+            <ThemeProvider defaultTheme="dark">
+                <ValidTimerProvider>
+                    <RouterProvider router={router} />
+                </ValidTimerProvider>
+            </ThemeProvider>
+        </QueryClientProvider>
+    );
 }

@@ -32,9 +32,28 @@ public class ExternalPriceListHostedService(ILogger<ExternalPriceListHostedServi
 
                 if (validUntil == null || validUntil <= DateTime.UtcNow)
                 {
-                    var priceList = await externalPriceListService.FetchPriceList();
-                    await externalPriceListService.SavePriceList(priceList);
-                    validUntil = priceList.ValidUntil;
+                    try
+                    {
+                        var priceList = await externalPriceListService.FetchPriceList();
+                        await externalPriceListService.SavePriceList(priceList);
+                        validUntil = priceList.ValidUntil;
+                    }
+                    catch (HttpRequestException netEx)
+                    {
+                        logger.LogWarning("Failed to fetch price list from API. Falling back to latest saved list. \nDetails: {ex}", netEx.Message);
+
+                        latestLog = await apiLogService.GetLatest();
+                        validUntil = latestLog?.ExternalPriceList.ValidUntil;
+
+                        await Task.Delay(TimeSpan.FromMinutes(5), stoppingToken);
+
+                        if (validUntil == null)
+                        {
+                            logger.LogError("No valid saved price list available after network failure.");
+                            await Task.Delay(TimeSpan.FromMinutes(5), stoppingToken);
+                            continue;
+                        }
+                    }
                 }
 
                 await graphBuilderService.LoadGraph();

@@ -1,44 +1,9 @@
-import { useEffect, useState } from "react";
-import { useQueryClient } from "@tanstack/react-query";
-import type { ValidUntil } from "@/pages/RoutesPage";
-
-type TimeLeft = {
-  total: number;
-  minutes: number;
-  seconds: number;
-};
+import { useValidTimer } from "@/providers/ValidTimerProvider";
 
 export const PriceListValidTimer = () => {
-  const queryClient = useQueryClient();
-  const validUntil: ValidUntil | undefined = queryClient.getQueryData([
-    "validUntil",
-  ]);
+    const timeLeft = useValidTimer();
 
-  const [timeLeft, setTimeLeft] = useState<TimeLeft | null>(null);
-
-  useEffect(() => {
-    if (!validUntil) return;
-
-    const target = new Date(validUntil.validUntil + "Z");
-    let interval: ReturnType<typeof setInterval>;
-
-    const updateTime = () => {
-      const remaining = getTimeRemaining(target);
-      setTimeLeft(remaining);
-
-      if (remaining.total <= 0) {
-        clearInterval(interval);
-      }
-    };
-
-    updateTime();
-    interval = setInterval(updateTime, 1000);
-
-    return () => clearInterval(interval);
-  }, [validUntil]);
-
-  if (!validUntil) return <span>Loading...</span>;
-  if (!timeLeft) return null;
+    if (!timeLeft) return null;
 
   return (
     <TimerText
@@ -67,16 +32,3 @@ const TimerText = ({ minutes, seconds, total }: TimerTextProps) => {
     </div>
   );
 };
-
-function getTimeRemaining(targetDate: Date): TimeLeft {
-  const total = targetDate.getTime() - new Date().getTime();
-
-  const seconds = Math.max(Math.floor((total / 1000) % 60), 0);
-  const minutes = Math.max(Math.floor((total / 1000 / 60) % 60), 0);
-
-  return {
-    total,
-    minutes,
-    seconds,
-  };
-}

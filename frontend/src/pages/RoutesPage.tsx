@@ -1,3 +1,4 @@
+import { PriceListValidTimer } from "@/components/PriceListValidTimer";
 import { RouteCard } from "@/components/RouteCard";
 import { RouteFilters } from "@/components/RouteFilters";
 import { RouteSorter } from "@/components/RouteSorter";
@@ -21,6 +22,10 @@ export type Company = {
   name: string;
 };
 
+export type ValidUntil = {
+  validUntil: Date | string;
+};
+
 const fetchDestinations = async (): Promise<Destination[]> => {
   const res = await api.get("destinations");
   return res.data;
@@ -33,6 +38,11 @@ const fetchCompanies = async (): Promise<Company[]> => {
 
 const fetchRoutes = async (body: FormValues) => {
   const res = await api.post("routes", body);
+  return res.data;
+};
+
+const fetchValidUntil = async (): Promise<ValidUntil> => {
+  const res = await api.get("travel-prices/valid-until");
   return res.data;
 };
 
@@ -49,6 +59,11 @@ export default function RoutesPage() {
     queryKey: ["companies"],
     queryFn: fetchCompanies,
     staleTime: "static",
+  });
+
+  useQuery({
+    queryKey: ["validUntil"],
+    queryFn: fetchValidUntil,
   });
 
   const form = useForm({
@@ -73,13 +88,14 @@ export default function RoutesPage() {
   return (
     <div className="flex w-full h-full space-x-6">
       <div className="flex flex-col w-full space-y-6">
-        <div className="h-fit bg-card border rounded px-4 py-6 sticky top-20">
+        <div className="h-fit bg-card border rounded px-4 py-6 flex items-center">
+          <PriceListValidTimer />
           <RouteSorter form={form} />
         </div>
         <div className="flex space-x-6">
-          <div className="w-1/3 h-fit bg-card border rounded px-4 py-6 sticky top-53 space-y-6">
+          <div className="w-1/3 h-fit bg-card border rounded px-4 py-6 sticky top-20 space-y-6">
             <RouteFilters form={form} />
-            <Button type="submit" onClick={form.handleSubmit(onSubmit)}>
+            <Button type="submit" onClick={form.handleSubmit(onSubmit)} className="w-full">
               Find best routes
             </Button>
           </div>

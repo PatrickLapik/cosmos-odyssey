@@ -13,6 +13,8 @@ public class GraphBuilderService(IServiceScopeFactory serviceScopeFactory) : IGr
         using var scope = serviceScopeFactory.CreateScope();
         var context = scope.ServiceProvider.GetService<AppDbContext>();
 
+        _graph.Clear();
+
         var allValidCompanyRoutes = await context.CompanyRoutes
             .Include(cr => cr.Route)
             .ThenInclude(r => r.FromDestination)

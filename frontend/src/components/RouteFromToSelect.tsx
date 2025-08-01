@@ -13,22 +13,18 @@ import {
   FormLabel,
   FormMessage,
 } from "./ui/form";
-import type { Control } from "react-hook-form";
 import type { Destination } from "@/pages/RoutesPage";
+import type { RouteFilterProps } from "./RouteFilters";
 
-type RouteFromToSelectProps = {
-  control: Control<any>;
-};
-
-export const RouteFromToSelect = ({ control }: RouteFromToSelectProps) => {
+export const RouteFromToSelect = ({ control }: RouteFilterProps) => {
   const queryClient = useQueryClient();
 
   const destinations: Destination[] | undefined = queryClient.getQueryData(["destinations"]);
 
-  const commonClasses = "w-54";
+  const commonClasses = "w-full";
 
   return (
-    <div className="flex justify-between">
+    <div className="flex justify-between flex-col xl:flex-row space-x-12">
       {/* from */}
       <FormField
         name="FromId"
@@ -62,7 +58,7 @@ export const RouteFromToSelect = ({ control }: RouteFromToSelectProps) => {
         name="ToId"
         control={control}
         render={({ field }) => (
-          <FormItem className={commonClasses + " justify-end"}>
+          <FormItem className={commonClasses}>
             <FormLabel>To:</FormLabel>
             <Select defaultValue={field.value} onValueChange={field.onChange}>
               <FormControl>

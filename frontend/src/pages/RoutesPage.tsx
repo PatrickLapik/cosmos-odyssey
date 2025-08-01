@@ -25,6 +25,7 @@ export default function RoutesPage() {
   const {} = useQuery({
     queryKey: ["destinations"],
     queryFn: fetchDestinations,
+    staleTime: "static",
   });
 
   const onSubmit = async (values: FormValues) => {

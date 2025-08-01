@@ -22,8 +22,33 @@ export type Company = {
   name: string;
 };
 
+export type Route = {
+  id: string;
+  from: string;
+  fromId: string;
+  to: string;
+  toId: string;
+};
+
 export type ValidUntil = {
-  validUntil: Date | string;
+  validUntil: Date;
+};
+
+export type CompanyRouteResponse = {
+  id: string;
+  travelStart: Date;
+  travelEnd: Date;
+  price: number;
+  company: Company;
+  route: Route;
+  validUntil: Date;
+};
+
+export type TravelRoute = {
+  companyRouteResponses: CompanyRouteResponse[];
+  totalPrice: number;
+  totalTravelMinutes: number;
+  totalDistance: number;
 };
 
 const fetchDestinations = async (): Promise<Destination[]> => {
@@ -78,8 +103,10 @@ export default function RoutesPage() {
     },
   });
 
+  let travelRoutes: TravelRoute[];
+
   const onSubmit = async (values: FormValues) => {
-    const data = await queryClient.fetchQuery({
+    travelRoutes = await queryClient.fetchQuery({
       queryKey: ["routes", values],
       queryFn: () => fetchRoutes(values),
     });
@@ -95,7 +122,11 @@ export default function RoutesPage() {
         <div className="flex space-x-6">
           <div className="w-1/3 h-fit bg-card border rounded px-4 py-6 sticky top-20 space-y-6">
             <RouteFilters form={form} />
-            <Button type="submit" onClick={form.handleSubmit(onSubmit)} className="w-full">
+            <Button
+              type="submit"
+              onClick={form.handleSubmit(onSubmit)}
+              className="w-full"
+            >
               Find best routes
             </Button>
           </div>

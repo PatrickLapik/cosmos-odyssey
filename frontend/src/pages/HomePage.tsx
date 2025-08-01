@@ -1,6 +1,6 @@
 import { Link } from "react-router";
 import { Logo } from "@/components/Logo";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 
 export default function HomePage() {
   return (

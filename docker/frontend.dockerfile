@@ -6,4 +6,4 @@ COPY /frontend/package*.json ./
 
 RUN npm i
 
-COPY /frontend/* .
+COPY /frontend/ .

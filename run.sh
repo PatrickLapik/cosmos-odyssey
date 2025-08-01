@@ -18,6 +18,6 @@ if [ "$1" = "detached" ]; then
 fi
 
 if [ -z "$1" ]; then
-    docker compose --profile "db" --profile "backend" --profile "frontend" up --build 
+    docker compose --profile "db" --profile "backend" --profile "frontend" up --build --watch
 fi
 

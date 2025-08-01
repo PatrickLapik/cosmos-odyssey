@@ -11,10 +11,16 @@ services:
       - "${BACKEND_PORT}:${BACKEND_PORT}"
     restart: always
     command: dotnet run
+    develop:
+      watch:
+        - action: sync+restart
+          path: ./backend
+          target: /backend
+          ignore:
+            - bin/
+            - obj/
     depends_on:
       - db
-    volumes:
-      - ./backend:/backend
     profiles:
       - backend
 
@@ -30,8 +36,13 @@ services:
       - "${VITE_FRONTEND_PORT}:${VITE_FRONTEND_PORT}"
     restart: always
     command: npm run dev
-    volumes:
-      - ./frontend:/frontend
+    develop:
+      watch:
+        - action: sync
+          path: ./frontend
+          target: /frontend
+          ignore:
+            - node_modules/
     profiles:
       - frontend 
 
@@ -50,3 +61,4 @@ services:
 
 volumes:
   db-data:
+

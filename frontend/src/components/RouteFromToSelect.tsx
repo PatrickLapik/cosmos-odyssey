@@ -14,9 +14,9 @@ import {
   FormMessage,
 } from "./ui/form";
 import type { Destination } from "@/pages/RoutesPage";
-import type { RouteFilterProps } from "./RouteFilters";
+import type { RouteFormProps } from "./RouteFilters";
 
-export const RouteFromToSelect = ({ control }: RouteFilterProps) => {
+export const RouteFromToSelect = ({ control }: RouteFormProps) => {
   const queryClient = useQueryClient();
 
   const destinations: Destination[] | undefined = queryClient.getQueryData(["destinations"]);

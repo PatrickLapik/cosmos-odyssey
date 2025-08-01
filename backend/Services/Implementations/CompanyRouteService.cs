@@ -38,15 +38,42 @@ public class CompanyRouteService(AppDbContext context, IMapper mapper, IPathExpl
     public List<FullCompanyRoutesResponse> GetAllRoutes(RouteRequest request)
     {
         var routes = pathExplorerService.FindAllValidPaths(request.FromId, request.ToId, DateTime.Now);
-        var mappedRoutes = routes.ConvertAll(r => mapper.Map<FullCompanyRoutesResponse>(r));
+        var mappedRoutes = routes.ConvertAll(mapper.Map<FullCompanyRoutesResponse>);
 
-        return mappedRoutes
+        var filteredRoutes = mappedRoutes
             .Where(route =>
                 (request.CompanyId == Guid.Empty ||
                  route.CompanyRouteResponses.TrueForAll(cp => cp.Company.Id == request.CompanyId)) &&
                 (request.MaxPrice <= 0 || route.TotalPrice <= request.MaxPrice) &&
                 (request.MaxDistance <= 0 || route.TotalDistance <= request.MaxDistance) &&
                 (request.MaxTravelMinutes <= 0 || route.TotalTravelMinutes <= request.MaxTravelMinutes)
-            ).ToList();
+            );
+
+        switch (request.SortBy)
+        {
+            case RouteSortBy.Price:
+                filteredRoutes = request.SortOrder == SortOrder.Asc
+                    ? filteredRoutes.OrderBy(r => r.TotalPrice)
+                    : filteredRoutes.OrderByDescending(r => r.TotalPrice);
+                break;
+
+            case RouteSortBy.TravelTime:
+                filteredRoutes = request.SortOrder == SortOrder.Asc
+                    ? filteredRoutes.OrderBy(r => r.TotalTravelMinutes)
+                    : filteredRoutes.OrderByDescending(r => r.TotalTravelMinutes);
+                break;
+
+            case RouteSortBy.Distance:
+                filteredRoutes = request.SortOrder == SortOrder.Asc
+                    ? filteredRoutes.OrderBy(r => r.TotalDistance)
+                    : filteredRoutes.OrderByDescending(r => r.TotalDistance);
+                break;
+
+            case RouteSortBy.None:
+            default:
+                break;
+        }
+
+        return filteredRoutes.ToList();
     }
 }

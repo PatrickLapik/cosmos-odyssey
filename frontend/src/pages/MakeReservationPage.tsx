@@ -1,5 +1,14 @@
 import { useLocation } from "react-router";
 import type { TravelRoute } from "./RoutesPage";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { reservationSchema } from "@/schemas/ReservationSchema";
+import { ReservationForm } from "@/components/ReservationForm";
+import {
+  TravelDestination,
+  TravelStartEnd,
+} from "@/components/TravelRouteCard";
+import { PriceListValidTimer } from "@/components/PriceListValidTimer";
 
 export default function MakeReservationPage() {
   const location = useLocation();
@@ -11,9 +20,32 @@ export default function MakeReservationPage() {
     return <p>Invalid access - no travel route data provided.</p>;
   }
 
+  const form = useForm({
+    resolver: zodResolver(reservationSchema),
+    defaultValues: {
+      FirstName: "",
+      LastName: "",
+      CompanyRouteIds: travelRoute.companyRouteResponses.map((cr) => cr.id),
+    },
+  });
+
   return (
-    <div>
-      <h1>Reserve total price {travelRoute.totalPrice}</h1>
+    <div className="flex flex-col h-full space-x-2 space-y-2">
+            <div className="bg-popover rounded border px-4 py-6">
+                <PriceListValidTimer/>
+            </div>
+      <div className="flex justify-center w-full h-full space-x-2">
+        <div className="flex flex-col bg-popover rounded border px-4 py-6 space-y-6 w-full">
+          <p className="w-full text-2xl">
+            Trip total price: {travelRoute.totalPrice.toLocaleString()}€
+          </p>
+          <TravelStartEnd travelRoute={travelRoute} />
+          {travelRoute.companyRouteResponses.map((cr) => (
+            <TravelDestination route={cr.route} company={cr.company} />
+          ))}
+        </div>
+        <ReservationForm form={form} />
+      </div>
     </div>
   );
 }

@@ -9,20 +9,6 @@ type TravelRouteCardProps = {
 
 export const TravelRouteCard = ({ travelRoute }: TravelRouteCardProps) => {
   const navigate = useNavigate();
-
-  const firstResponse = travelRoute.companyRouteResponses[0];
-  const lastResponse =
-    travelRoute.companyRouteResponses[
-      travelRoute.companyRouteResponses.length - 1
-    ];
-
-  const travelStart = firstResponse?.travelStart
-    ? new Date(firstResponse.travelStart)
-    : null;
-  const travelEnd = lastResponse?.travelEnd
-    ? new Date(lastResponse.travelEnd)
-    : null;
-
   const handleReserve = () => {
     navigate("reserve", {
       state: { travelRoute },
@@ -33,11 +19,11 @@ export const TravelRouteCard = ({ travelRoute }: TravelRouteCardProps) => {
     <div className="w-full bg-popover border rounded px-4 py-2 flex flex-col justify-between">
       <div className="flex h-full w-full">
         <div className="flex flex-col space-y-4 w-full h-full justify-between">
+          <div className="flex justify-between w-full">
+            <TravelStartEnd travelRoute={travelRoute} />
+            <b className="w-fit">{travelRoute.totalPrice.toLocaleString()}€</b>
+          </div>
 
-          <b className="w-full">{travelRoute.totalPrice.toLocaleString()} €</b>
-          {travelStart && travelEnd && (
-            <TravelStartEnd start={travelStart} end={travelEnd} />
-          )}
           <div className="flex flex-col space-y-2">
             {travelRoute.companyRouteResponses.map((cr, index) => (
               <TravelDestination
@@ -64,18 +50,26 @@ export const TravelRouteCard = ({ travelRoute }: TravelRouteCardProps) => {
 };
 
 type TravelStartEndProps = {
-  start: Date;
-  end: Date;
+  travelRoute: TravelRoute;
 };
 
-const TravelStartEnd = ({ start, end }: TravelStartEndProps) => {
+export const TravelStartEnd = ({ travelRoute }: TravelStartEndProps) => {
+  const firstResponse = travelRoute.companyRouteResponses[0];
+  const lastResponse =
+    travelRoute.companyRouteResponses[
+      travelRoute.companyRouteResponses.length - 1
+    ];
+
+  const travelStart = new Date(firstResponse.travelStart);
+  const travelEnd = new Date(lastResponse.travelEnd);
+
   return (
-    <div className="flex space-x-2 text-chart-1">
+    <div className="flex space-x-2 text-chart-1 w-full">
       <p>
-        <b>Start:</b> {formatDate(start)}
+        <b>Start:</b> {formatDate(travelStart)}
       </p>
       <p>
-        <b>Arrival:</b> {formatDate(end)}
+        <b>Arrival:</b> {formatDate(travelEnd)}
       </p>
     </div>
   );
@@ -86,7 +80,7 @@ type TravelDestinationProps = {
   company: Company;
 };
 
-const TravelDestination = ({
+export const TravelDestination = ({
   route,
   company,
 }: TravelDestinationProps) => {
@@ -136,5 +130,5 @@ const formatDate = (date: Date) => {
       minute: "2-digit",
       hour12: false,
     })
-    .replace(",", ""); // Remove comma between date and time
+    .replace(",", "");
 };

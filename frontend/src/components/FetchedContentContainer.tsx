@@ -11,7 +11,7 @@ export const FetchedContentContainer = ({ isLoading, data, children }: FetchedCo
   return (
     <div
       className={cn(
-        "relative flex flex-col w-full space-y-6 py-6 px-4 bg-card rounded border transition-opacity duration-200",
+        "relative grid grid-cols-1 md:grid-cols-2 w-full gap-4 py-6 px-4 bg-card rounded border transition-opacity duration-200",
         isLoading && "opacity-50 pointer-events-none"
       )}
     >
@@ -22,7 +22,7 @@ export const FetchedContentContainer = ({ isLoading, data, children }: FetchedCo
       )}
 
       {!isLoading && (!data || data.length === 0) ? (
-        <p className="w-full text-center text-muted-foreground">No data found.</p>
+        <p className="w-full text-center text-muted-foreground col-span-2">No data found.</p>
       ) : (
         children
       )}

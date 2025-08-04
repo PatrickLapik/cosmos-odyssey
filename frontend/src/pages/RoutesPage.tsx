@@ -13,6 +13,7 @@ import { TravelRouteList } from "@/components/TravelRouteList";
 import { useRoutesFormQueryParams } from "@/hooks/useRoutesFormQueryParams";
 import { fetchCompanies, fetchDestinations, fetchRoutes } from "@/lib/fetches";
 import { useEffect, useState } from "react";
+import { useValidTimer } from "@/providers/ValidTimerProvider";
 
 export type Destination = {
   id: string;
@@ -55,6 +56,7 @@ export type TravelRoute = {
 
 export default function RoutesPage() {
   const paramValues = useRoutesFormQueryParams();
+    const timeLeft = useValidTimer();
 
   useQuery({
     queryKey: ["destinations"],
@@ -83,7 +85,7 @@ export default function RoutesPage() {
   const [formValues, setFormValues] = useState<FormValues>(form.getValues());
 
   const onSubmit = async (values: FormValues) => {
-    if (JSON.stringify(formValues) !== JSON.stringify(values)) {
+    if (JSON.stringify(formValues) !== JSON.stringify(values) || timeLeft?.total <= 0) {
       setFormValues(values);
     }
   };

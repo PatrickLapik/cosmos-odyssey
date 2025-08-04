@@ -3,6 +3,7 @@ import DefaultLayout from "@/layouts/DefaultLayout";
 import ErrorPage from "@/pages/ErrorPage";
 import HomePage from "@/pages/HomePage";
 import RoutesPage from "@/pages/RoutesPage";
+import MakeReservationPage from "@/pages/MakeReservationPage";
 
 export const router = createBrowserRouter([
   {
@@ -16,6 +17,10 @@ export const router = createBrowserRouter([
       {
         path: "routes",
         Component: RoutesPage,
+      },
+      {
+        path: "routes/reserve",
+        Component: MakeReservationPage,
       },
     ],
   },

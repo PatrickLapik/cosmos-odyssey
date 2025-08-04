@@ -1,10 +1,10 @@
 import type {
     Company,
-    Destination,
     Route,
     TravelRoute,
 } from "@/pages/RoutesPage";
 import { ArrowRight } from "lucide-react";
+import { Button } from "./ui/button";
 
 type TravelRouteCardProps = {
     travelRoute: TravelRoute;
@@ -26,27 +26,34 @@ export const TravelRouteCard = ({ travelRoute }: TravelRouteCardProps) => {
 
     return (
         <div className="w-full h-44 bg-popover border rounded px-4 py-2 flex flex-col justify-between">
-            <div className="flex flex-col space-y-4">
-                {travelStart && travelEnd && (
-                    <TravelStartEnd start={travelStart} end={travelEnd} />
-                )}
-                <div className="flex space-x-2 font-semibold">
-                    {travelRoute.companyRouteResponses.map((cr, index, array) => (
-                        <TravelDestination
-                            key={cr.route.id}
-                            route={cr.route}
-                            company={cr.company}
-                            start={index === 0}
-                            end={index === array.length - 1}
-                        />
-                    ))}
+            <div className="flex h-full w-full">
+                <div className="flex flex-col space-y-4 w-full h-full justify-between">
+                    {travelStart && travelEnd && (
+                        <TravelStartEnd start={travelStart} end={travelEnd} />
+                    )}
+                    <div className="flex space-x-2">
+                        {travelRoute.companyRouteResponses.map((cr, index, array) => (
+                            <TravelDestination
+                                key={cr.route.fromId + cr.route.toId + index}
+                                route={cr.route}
+                                company={cr.company}
+                                start={index === 0}
+                                end={index === array.length - 1}
+                            />
+                        ))}
+                    </div>
+
+                    <TravelRouteTotals
+                        totalPrice={travelRoute.totalPrice}
+                        totalDistance={travelRoute.totalDistance}
+                        totalMinutes={travelRoute.totalTravelMinutes}
+                    />
+                </div>
+                <div className="flex flex-col justify-between w-34 text-center">
+                    <b className="w-full">{travelRoute.totalPrice.toLocaleString()} €</b>
+                    <Button variant="secondary">Reserve</Button>
                 </div>
             </div>
-            <TravelRouteTotals
-                totalPrice={travelRoute.totalPrice}
-                totalDistance={travelRoute.totalDistance}
-                totalMinutes={travelRoute.totalTravelMinutes}
-            />
         </div>
     );
 };
@@ -58,7 +65,7 @@ type TravelStartEndProps = {
 
 const TravelStartEnd = ({ start, end }: TravelStartEndProps) => {
     return (
-        <div className="flex space-x-2">
+        <div className="flex space-x-2 text-chart-1">
             <p>
                 <b>Start:</b> {formatDate(start)}
             </p>
@@ -82,7 +89,7 @@ const TravelDestination = ({
     start = false,
     end = false,
 }: TravelDestinationProps) => {
-    const commonClasses = "flex space-x-2";
+    const commonClasses = "flex space-x-2 text-chart-3";
 
     if (start && end) {
         return (
@@ -117,10 +124,8 @@ const TravelDestination = ({
 
 const TravelDestinationArrow = ({ companyName }: { companyName: string }) => {
     return (
-        <div className="flex items-center">
-            <p className="text-card-foreground font-normal opacity-40 text-xs">
-                via {companyName}
-            </p>
+        <div className="flex items-center space-x-2">
+            <p className="font-normal opacity-40 text-xs">via {companyName}</p>
             <ArrowRight />
         </div>
     );
@@ -133,26 +138,26 @@ type TravelRouteTotalsProps = {
 };
 
 const TravelRouteTotals = ({
-    totalPrice,
     totalDistance,
     totalMinutes,
 }: TravelRouteTotalsProps) => {
     return (
-        <div className="flex space-x-2 text-popover-foreground opacity-40 text-xs">
-            <p>Total trip price: {totalPrice.toLocaleString()}</p>
-            <p>Aprox travel time: {(totalMinutes / 60 / 60).toFixed(1)} day(s)</p>
+        <div className="flex space-x-2 opacity-40 text-chart-3 text-xs">
+            <p>Travel time: {(totalMinutes / 60 / 24).toFixed(1)} day(s)</p>
             <p>Total trip distance: {totalDistance.toLocaleString()} km</p>
         </div>
     );
 };
 
 const formatDate = (date: Date) => {
-    return date.toLocaleString('en-GB', {
-        day: '2-digit',
-        month: 'short',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: false,
-    }).replace(',', ''); // Remove comma between date and time
+    return date
+        .toLocaleString("en-GB", {
+            day: "numeric",
+            month: "short",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: false,
+        })
+        .replace(",", ""); // Remove comma between date and time
 };

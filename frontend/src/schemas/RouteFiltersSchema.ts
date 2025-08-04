@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const sortByEnum = ["None", "Price", "TraveTime", "Distance"] as const;
+export const sortByEnum = ["None", "Price", "TravelTime", "Distance"] as const;
 export const sortOrderEnum = ["Asc", "Desc"] as const;
 
 export const routeFiltersSchema = z

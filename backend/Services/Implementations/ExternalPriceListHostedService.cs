@@ -45,6 +45,8 @@ public class ExternalPriceListHostedService(ILogger<ExternalPriceListHostedServi
                         latestLog = await apiLogService.GetLatest();
                         validUntil = latestLog?.ExternalPriceList.ValidUntil;
 
+                        await graphBuilderService.LoadGraph();
+
                         await Task.Delay(TimeSpan.FromMinutes(5), stoppingToken);
 
                         if (validUntil == null)

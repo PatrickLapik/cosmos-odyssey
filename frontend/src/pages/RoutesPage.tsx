@@ -7,12 +7,12 @@ import {
   type FormValues,
 } from "@/schemas/RouteFiltersSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { TravelRouteList } from "@/components/TravelRouteList";
-import { useRoutesFormQueryParams } from "@/hooks/useRoutesFormQueryParams";
-import { fetchCompanies, fetchDestinations, fetchRoutes } from "@/lib/fetches";
-import { useEffect, useState } from "react";
+import { useFormQueryParams } from "@/hooks/useRoutesFormQueryParams";
+import { fetchCompanies, fetchDestinations } from "@/lib/fetches";
+import { useState } from "react";
 import { useValidTimer } from "@/providers/ValidTimerProvider";
 
 export type Destination = {
@@ -55,7 +55,7 @@ export type TravelRoute = {
 };
 
 export default function RoutesPage() {
-  const paramValues = useRoutesFormQueryParams();
+  const { result: paramValues } = useFormQueryParams<FormValues>();
     const timeLeft = useValidTimer();
 
   useQuery({

@@ -1,7 +1,7 @@
 import { useValidTimer } from "@/providers/ValidTimerProvider";
 
 export const PriceListValidTimer = () => {
-    const timeLeft = useValidTimer();
+    const { timeLeft } = useValidTimer();
 
     if (!timeLeft) return null;
 

@@ -1,77 +1,90 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import type { ValidUntil } from "@/pages/RoutesPage";
-import { useQuery } from "@tanstack/react-query";
+import type { ValidUntil } from "@/types/ResponseTypes";
+import { useQuery, type UseQueryResult } from "@tanstack/react-query";
 import api from "@/lib/axios";
 
 type TimeLeft = {
-    total: number;
-    minutes: number;
-    seconds: number;
+  total: number;
+  minutes: number;
+  seconds: number;
 };
 
-const ValidTimerContext = createContext<TimeLeft | null>(null);
+type ValidTimerContextType = {
+  timeLeft: TimeLeft;
+  query: UseQueryResult<ValidUntil>;
+};
 
+const ValidTimerContext = createContext<ValidTimerContextType | null>(null);
 
 const fetchValidUntil = async (): Promise<ValidUntil> => {
-    const res = await api.get("travel-prices/valid-until");
-    return res.data;
+  const res = await api.get("travel-prices/valid-until");
+  return res.data;
 };
 
 export const ValidTimerProvider = ({
-    children,
+  children,
 }: {
-    children: React.ReactNode;
+  children: React.ReactNode;
 }) => {
-    const [timeLeft, setTimeLeft] = useState<TimeLeft | null>(null);
+  const [timeLeft, setTimeLeft] = useState<TimeLeft>({
+    total: 0,
+    minutes: 0,
+    seconds: 0,
+  });
 
-    const { data: validUntil } = useQuery<ValidUntil>({
-        queryKey: ["validUntil"],
-        queryFn: fetchValidUntil,
-        staleTime: timeLeft?.total,
-        enabled: true,
-    });
+  const query = useQuery<ValidUntil>({
+    queryKey: ["validUntil"],
+    queryFn: fetchValidUntil,
+    enabled: timeLeft.total <= 0,
+  });
 
-    useEffect(() => {
-        if (!validUntil) return;
+  const validUntil = query.data;
 
-        const target = new Date(validUntil.validUntil + "Z");
-        let interval: ReturnType<typeof setInterval>;
+  useEffect(() => {
+    if (!validUntil) return;
 
-        const updateTime = () => {
-            const remaining = getTimeRemaining(target);
-            setTimeLeft(remaining);
+    const target = new Date(validUntil.validUntil + "Z");
+    let interval: ReturnType<typeof setInterval>;
 
-            if (remaining.total <= 0) {
-                clearInterval(interval);
-            }
-        };
+    const updateTime = () => {
+      const remaining = getTimeRemaining(target);
+      setTimeLeft(remaining);
 
-        updateTime();
-        interval = setInterval(updateTime, 1000);
+      if (remaining.total <= 0) {
+        clearInterval(interval);
+      }
+    };
 
-        return () => clearInterval(interval);
-    }, [validUntil]);
+    updateTime();
+    interval = setInterval(updateTime, 1000);
 
-    return (
-        <ValidTimerContext.Provider value={timeLeft}>
-            {children}
-        </ValidTimerContext.Provider>
-    );
+    return () => clearInterval(interval);
+  }, [validUntil]);
+
+  return (
+    <ValidTimerContext.Provider value={{ timeLeft, query }}>
+      {children}
+    </ValidTimerContext.Provider>
+  );
 };
 
 export const useValidTimer = () => {
-    return useContext(ValidTimerContext);
+  const context = useContext(ValidTimerContext);
+  if (!context) {
+    throw new Error("useValidTimer must be used within a ValidTimerProvider");
+  }
+  return context;
 };
 
 function getTimeRemaining(targetDate: Date): TimeLeft {
-    const total = targetDate.getTime() - new Date().getTime();
+  const total = targetDate.getTime() - new Date().getTime();
 
-    const seconds = Math.max(Math.floor((total / 1000) % 60), 0);
-    const minutes = Math.max(Math.floor((total / 1000 / 60) % 60), 0);
+  const seconds = Math.max(Math.floor((total / 1000) % 60), 0);
+  const minutes = Math.max(Math.floor((total / 1000 / 60) % 60), 0);
 
-    return {
-        total,
-        minutes,
-        seconds,
-    };
+  return {
+    total,
+    minutes,
+    seconds,
+  };
 }

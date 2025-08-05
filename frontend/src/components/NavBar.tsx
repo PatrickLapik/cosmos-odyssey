@@ -9,6 +9,7 @@ export const NavBar = () => {
         <Logo/>
         <NavButton to="/">Home</NavButton>
         <NavButton to="/routes">Routes</NavButton>
+        <NavButton to="/reservations">Reservations</NavButton>
     </nav>
   );
 };

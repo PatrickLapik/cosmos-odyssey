@@ -10,53 +10,15 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { TravelRouteList } from "@/components/TravelRouteList";
-import { useFormQueryParams } from "@/hooks/useRoutesFormQueryParams";
+import { useFormQueryParams } from "@/hooks/useFormQueryParams";
 import { fetchCompanies, fetchDestinations } from "@/lib/fetches";
 import { useState } from "react";
 import { useValidTimer } from "@/providers/ValidTimerProvider";
 
-export type Destination = {
-  id: string;
-  name: string;
-};
-
-export type Company = {
-  id: string;
-  name: string;
-};
-
-export type Route = {
-  id: string;
-  from: string;
-  fromId: string;
-  to: string;
-  toId: string;
-};
-
-export type ValidUntil = {
-  validUntil: Date;
-};
-
-export type CompanyRouteResponse = {
-  id: string;
-  travelStart: Date;
-  travelEnd: Date;
-  price: number;
-  company: Company;
-  route: Route;
-  validUntil: Date;
-};
-
-export type TravelRoute = {
-  companyRouteResponses: CompanyRouteResponse[];
-  totalPrice: number;
-  totalTravelMinutes: number;
-  totalDistance: number;
-};
 
 export default function RoutesPage() {
   const { result: paramValues } = useFormQueryParams<FormValues>();
-    const timeLeft = useValidTimer();
+  const { timeLeft, query: validTimerQuery } = useValidTimer();
 
   useQuery({
     queryKey: ["destinations"],
@@ -85,8 +47,12 @@ export default function RoutesPage() {
   const [formValues, setFormValues] = useState<FormValues>(form.getValues());
 
   const onSubmit = async (values: FormValues) => {
-    if (JSON.stringify(formValues) !== JSON.stringify(values) || timeLeft?.total <= 0) {
+    if (
+      JSON.stringify(formValues) !== JSON.stringify(values) ||
+      timeLeft.total <= 0
+    ) {
       setFormValues(values);
+      validTimerQuery.refetch();
     }
   };
 

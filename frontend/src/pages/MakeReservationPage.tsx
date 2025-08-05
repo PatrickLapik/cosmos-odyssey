@@ -1,5 +1,5 @@
 import { useLocation } from "react-router";
-import type { TravelRoute } from "./RoutesPage";
+import type { TravelRoute } from "@/types/ResponseTypes";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { reservationSchema } from "@/schemas/ReservationSchema";
@@ -34,18 +34,31 @@ export default function MakeReservationPage() {
       <div className="bg-popover rounded border px-4 py-6">
         <PriceListValidTimer />
       </div>
+
       <div className="flex justify-center w-full h-full space-x-2">
-        <div className="flex flex-col bg-popover rounded border px-4 py-6 space-y-6 w-full">
-          <p className="w-full text-2xl">
-            Trip total price: {travelRoute.totalPrice.toLocaleString()}€
-          </p>
-          <TravelStartEnd travelRoute={travelRoute} />
-          {travelRoute.companyRouteResponses.map((cr) => (
-            <TravelDestination route={cr.route} company={cr.company} />
-          ))}
-        </div>
+        <ReservationDetails travelRoute={travelRoute} />
         <ReservationForm form={form} />
       </div>
     </div>
   );
 }
+
+type ReservationDetailsProps = {
+  travelRoute: TravelRoute;
+};
+
+const ReservationDetails = ({
+  travelRoute,
+}: ReservationDetailsProps) => {
+  return (
+    <div className="flex flex-col bg-popover rounded border px-4 py-6 space-y-6 w-full">
+      <p className="w-full text-2xl">
+        Trip total price: {travelRoute.totalPrice.toLocaleString()}€
+      </p>
+      <TravelStartEnd travelRoute={travelRoute} />
+      {travelRoute.companyRouteResponses.map((cr) => (
+        <TravelDestination route={cr.route} company={cr.company} />
+      ))}
+    </div>
+  );
+};

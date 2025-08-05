@@ -14,7 +14,7 @@ type TravelRouteListProps = {
 };
 
 export const TravelRouteList = ({ formValues }: TravelRouteListProps) => {
-  const validTime = useValidTimer();
+  const { timeLeft } = useValidTimer();
 
   const {
     data: travelRoutes,
@@ -25,7 +25,7 @@ export const TravelRouteList = ({ formValues }: TravelRouteListProps) => {
     queryKey: ["routes", formValues],
     queryFn: () => fetchRoutes(formValues),
     enabled: false,
-    staleTime: validTime?.total,
+    staleTime: timeLeft.total,
   });
 
   useEffect(() => {

@@ -13,7 +13,7 @@ import {
     FormLabel,
     FormMessage,
 } from "./ui/form";
-import type { Destination } from "@/pages/RoutesPage";
+import type { Destination } from "@/types/ResponseTypes";
 import type { RouteFormProps } from "./RouteFilters";
 import { useSyncQueryParam } from "@/hooks/useSyncQueryParam";
 

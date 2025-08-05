@@ -13,7 +13,7 @@ import {
     FormMessage,
 } from "./ui/form";
 import { useQueryClient } from "@tanstack/react-query";
-import type { Company } from "@/pages/RoutesPage";
+import type { Company } from "@/types/ResponseTypes";
 import type { RouteFormProps } from "./RouteFilters";
 import { useSyncQueryParam } from "@/hooks/useSyncQueryParam";
 

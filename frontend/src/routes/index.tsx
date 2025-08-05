@@ -4,6 +4,7 @@ import ErrorPage from "@/pages/ErrorPage";
 import HomePage from "@/pages/HomePage";
 import RoutesPage from "@/pages/RoutesPage";
 import MakeReservationPage from "@/pages/MakeReservationPage";
+import { SeeReservationsPage } from "@/pages/SeeReservationsPage";
 
 export const router = createBrowserRouter([
   {
@@ -21,6 +22,10 @@ export const router = createBrowserRouter([
       {
         path: "routes/reserve",
         Component: MakeReservationPage,
+      },
+      {
+        path: "reservations",
+        Component: SeeReservationsPage,
       },
     ],
   },

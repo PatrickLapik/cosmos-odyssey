@@ -1,4 +1,4 @@
-import type { Company, Route, TravelRoute } from "@/pages/RoutesPage";
+import type { Company, Route, TravelRoute } from "@/types/ResponseTypes";
 import { ArrowRight } from "lucide-react";
 import { Button } from "./ui/button";
 import { useNavigate } from "react-router";

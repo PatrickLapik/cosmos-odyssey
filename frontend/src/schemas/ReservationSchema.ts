@@ -1,10 +1,9 @@
-import { useValidTimer } from "@/providers/ValidTimerProvider";
 import { z } from "zod";
 
 export const reservationSchema = z
   .object({
-    FirstName: z.string(),
-    LastName: z.string(),
+    FirstName: z.string().min(1, "First name is required"),
+    LastName: z.string().min(1, "Last name is required"),
     CompanyRouteIds: z.array(z.string().nonempty()),
   });
 

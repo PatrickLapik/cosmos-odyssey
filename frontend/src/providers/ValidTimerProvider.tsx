@@ -22,14 +22,14 @@ export const ValidTimerProvider = ({
 }: {
     children: React.ReactNode;
 }) => {
+    const [timeLeft, setTimeLeft] = useState<TimeLeft | null>(null);
 
     const { data: validUntil } = useQuery<ValidUntil>({
         queryKey: ["validUntil"],
         queryFn: fetchValidUntil,
+        staleTime: timeLeft?.total,
         enabled: true,
     });
-
-    const [timeLeft, setTimeLeft] = useState<TimeLeft | null>(null);
 
     useEffect(() => {
         if (!validUntil) return;

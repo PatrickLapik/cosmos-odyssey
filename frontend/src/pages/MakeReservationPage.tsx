@@ -30,10 +30,10 @@ export default function MakeReservationPage() {
   });
 
   return (
-    <div className="flex flex-col h-full space-x-2 space-y-2">
-            <div className="bg-popover rounded border px-4 py-6">
-                <PriceListValidTimer/>
-            </div>
+    <div className="flex flex-col h- space-x-2 space-y-2">
+      <div className="bg-popover rounded border px-4 py-6">
+        <PriceListValidTimer />
+      </div>
       <div className="flex justify-center w-full h-full space-x-2">
         <div className="flex flex-col bg-popover rounded border px-4 py-6 space-y-6 w-full">
           <p className="w-full text-2xl">

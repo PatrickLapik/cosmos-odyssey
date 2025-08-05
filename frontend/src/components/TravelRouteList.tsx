@@ -7,12 +7,15 @@ import {
 } from "@/schemas/RouteFiltersSchema";
 import { useEffect } from "react";
 import { FetchedContentContainer } from "./FetchedContentContainer";
+import { useValidTimer } from "@/providers/ValidTimerProvider";
 
 type TravelRouteListProps = {
   formValues: FormValues;
 };
 
 export const TravelRouteList = ({ formValues }: TravelRouteListProps) => {
+  const validTime = useValidTimer();
+
   const {
     data: travelRoutes,
     isLoading,
@@ -22,6 +25,7 @@ export const TravelRouteList = ({ formValues }: TravelRouteListProps) => {
     queryKey: ["routes", formValues],
     queryFn: () => fetchRoutes(formValues),
     enabled: false,
+    staleTime: validTime?.total,
   });
 
   useEffect(() => {

@@ -21,13 +21,10 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.TotalTravelMinutes,
                 opt => opt.MapFrom(src => (src.Last().TravelEnd - src.First().TravelStart).TotalMinutes));
 
-        CreateMap<Reservation, ReservationResponse>()
-            .ForMember(dest => dest.CompanyNames,
-                opt => opt.MapFrom(src => src.CompanyRoutes.Select(c => c.Company.Name).Distinct().ToList()))
-            .ForMember(dest => dest.CompanyRoutes, opt => opt.MapFrom(src => src.CompanyRoutes));
-
         CreateMap<Company, CompanyResponse>();
         CreateMap<Destination, DestinationResponse>();
+        CreateMap<Reservation, ReservationResponse>()
+            .ForMember(dest => dest.CompanyRouteResponses, opt => opt.MapFrom(src => src.CompanyRoutes));
 
         CreateMap<CompanyRoute, RouteResponse>()
             .ForMember(dest => dest.FromId, opt => opt.MapFrom(src => src.Route.FromDestinationId))

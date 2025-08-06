@@ -13,5 +13,5 @@ public class Reservation : BaseModel
     public required double TotalPrice { get; set; }
     public required double TotalTravelMinutes { get; set; }
 
-    public ICollection<CompanyRoute> CompanyRoutes { get; set; } = new List<CompanyRoute>();
+    public List<CompanyRoute> CompanyRoutes { get; set; } = new List<CompanyRoute>();
 }

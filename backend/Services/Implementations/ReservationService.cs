@@ -14,6 +14,7 @@ public class ReservationService(AppDbContext context, IMapper mapper) : BaseServ
     {
         var companyRoutes = await Context.CompanyRoutes
             .Where(cr => reservationRequest.CompanyRouteIds.Contains(cr.Id))
+            .OrderBy(cr => cr.TravelStart)
             .ToListAsync();
 
         var newReservation = new Reservation
@@ -29,18 +30,19 @@ public class ReservationService(AppDbContext context, IMapper mapper) : BaseServ
         await Context.SaveChangesAsync();
     }
 
-    public async Task<List<ReservationResponse>> GetByFirstAndLastName(string firstName, string lastName)
+    public async Task<List<ReservationResponse>> GetByFirstAndLastName(SeeReservationRequest request)
     {
         var reservations = await Context.Reservations
             .Include(r => r.CompanyRoutes)
-            .ThenInclude(r => r.Company)
+                .ThenInclude(cr => cr.Company) 
             .Include(r => r.CompanyRoutes)
-            .ThenInclude(r => r.Route)
-            .ThenInclude(cr => cr.ToDestination)
+                .ThenInclude(cr => cr.Route) 
+                    .ThenInclude(r => r!.FromDestination)
             .Include(r => r.CompanyRoutes)
-            .ThenInclude(r => r.Route)
-            .ThenInclude(cr => cr.FromDestination)
-            .Where(cr => cr.FirstName.ToLower() == firstName.ToLower() && cr.LastName.ToLower() == lastName.ToLower())
+                .ThenInclude(cr => cr.Route) 
+                    .ThenInclude(r => r!.ToDestination)
+            .Include(r => r.CompanyRoutes.OrderBy(cr => cr.TravelStart))
+            .Where(cr => cr.FirstName.ToLower() == request.FirstName.ToLower() && cr.LastName.ToLower() == request.LastName.ToLower())
             .ToListAsync();
 
         return mapper.Map<List<Reservation>, List<ReservationResponse>>(reservations);

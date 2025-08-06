@@ -16,10 +16,10 @@ public class ReservationController(IReservationService reservationService) : Con
         return Ok();
     }
 
-    [HttpGet("{firstName}/{lastName}")]
-    public async Task<IActionResult> Get(string firstName, string lastName)
+    [HttpPost("show")]
+    public async Task<IActionResult> Get([FromBody] SeeReservationRequest request)
     {
-        var reservations = await reservationService.GetByFirstAndLastName(firstName, lastName);
+        var reservations = await reservationService.GetByFirstAndLastName(request);
         return Ok(reservations);
     }
 }

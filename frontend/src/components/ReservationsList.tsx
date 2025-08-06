@@ -46,8 +46,8 @@ export const ReservationsList = ({ formValues }: ReservationListProps) => {
       isLoading={isLoading || isRefetching}
       data={travelRoutes}
     >
-      {travelRoutes?.map((tr, i) => (
-        <ReservationDetails key={i} travelRoute={tr} />
+      {travelRoutes?.map((tr) => (
+        <ReservationDetails key={tr.id + tr.totalTravelMinutes} travelRoute={tr} />
       ))}
     </FetchedContentContainer>
   );

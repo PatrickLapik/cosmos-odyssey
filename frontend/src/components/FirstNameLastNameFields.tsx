@@ -34,7 +34,6 @@ export const FirstLastNameFields = ({
             <FormControl>
               <Input
                 {...field}
-                defaultValue={firstName || field.value}
                 onChange={(e) => {
                   field.onChange(e);
                   if (!saveToParams) return;
@@ -57,7 +56,6 @@ export const FirstLastNameFields = ({
             <FormControl>
               <Input
                 {...field}
-                defaultValue={field.value || lastName}
                 onChange={(e) => {
                   field.onChange(e);
                   if (!saveToParams) return;

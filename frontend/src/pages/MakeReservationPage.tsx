@@ -59,7 +59,7 @@ export const ReservationDetails = ({
         <>
           <TravelStartEnd travelRoute={travelRoute} />
           {travelRoute.companyRouteResponses.map((cr) => (
-            <TravelDestination route={cr.route} company={cr.company} />
+            <TravelDestination key={cr.id + cr.company.id} route={cr.route} company={cr.company} />
           ))}
         </>
       )}

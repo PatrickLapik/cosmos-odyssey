@@ -43,9 +43,16 @@ public class ExternalPriceListService : BaseService, IExternalPriceListService
         {
             var toDelete = await Context.TravelPrices
                 .OrderBy(tp => tp.CreatedAt)
+                    .Include(pl => pl.CompanyRoutes)
+                        .ThenInclude(cr => cr.Reservations)
                 .Take(totalCount - 15)
                 .ToListAsync();
 
+            foreach (var travelPriceCompanyRoute in toDelete.SelectMany(travelPrice => travelPrice.CompanyRoutes))
+            {
+                travelPriceCompanyRoute.Reservations.Clear();
+            }
+            
             Context.TravelPrices.RemoveRange(toDelete);
             await Context.SaveChangesAsync();
         }

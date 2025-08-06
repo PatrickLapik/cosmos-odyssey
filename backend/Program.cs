@@ -18,7 +18,17 @@ builder.Services.AddHostedService<ExternalPriceListHostedService>();
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment()) app.MapOpenApi();
+if (app.Environment.IsDevelopment()) 
+{
+    app.MapOpenApi();
+    
+    var db = app.Services.CreateScope().ServiceProvider.GetRequiredService<AppDbContext>();
+    
+    var pendingMigrations = await db.Database.GetPendingMigrationsAsync();
+    
+    if (pendingMigrations.Any())
+        await db.Database.MigrateAsync();
+}
 
 app.UseHttpsRedirection();
 

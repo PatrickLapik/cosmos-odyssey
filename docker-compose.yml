@@ -45,6 +45,8 @@ services:
             - node_modules/
     profiles:
       - frontend 
+    depends_on:
+      - backend
 
   db:
     image: mariadb:11.8.2

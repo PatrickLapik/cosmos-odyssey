@@ -1,5 +1,15 @@
 #!/bin/sh
 
+# Check if .env files exist
+
+if [ ! -f ./backend/.env ]; then
+    cp ./backend/.env.example ./backend/.env
+fi
+
+if [ ! -f ./frontend/.env ]; then
+    cp ./frontend/.env.example ./frontend/.env
+fi
+
 set -a
 . ./backend/.env
 . ./frontend/.env
@@ -22,6 +32,6 @@ if [ "$1" = "npm" ]; then
 fi
 
 if [ -z "$1" ]; then
-    docker compose --profile "db" --profile "backend" --profile "frontend" up --build --watch
+    docker compose --profile "db" --profile "backend" --profile "frontend" up --build
 fi
 

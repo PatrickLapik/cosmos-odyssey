@@ -36,8 +36,8 @@ export default function MakeReservationPage() {
       </div>
 
       <div className="flex justify-center w-full h-full space-x-2">
-        <ReservationDetails travelRoute={travelRoute} />
         <ReservationForm form={form} />
+        <ReservationDetails travelRoute={travelRoute} />
       </div>
     </div>
   );

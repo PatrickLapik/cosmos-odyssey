@@ -40,3 +40,10 @@ Run the run.sh script in the project root:
 ```
 docker compose --env-file .merged.env --profile "db" --profile "backend" --profile "frontend" up --build
 ```
+
+## After running
+
+Go to:
+```
+http://localhost:3000
+```

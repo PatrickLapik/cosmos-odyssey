@@ -19,8 +19,8 @@ import { useSyncQueryParam } from "@/hooks/useSyncQueryParam";
 
 export const RouteFromToSelect = ({ control }: RouteFormProps) => {
     const queryClient = useQueryClient();
-    const [fromId, setFromId] = useSyncQueryParam("FromId");
-    const [toId, setToId] = useSyncQueryParam("ToId");
+    const [fromId, setFromId] = useSyncQueryParam("FromId", 0);
+    const [toId, setToId] = useSyncQueryParam("ToId", 0);
 
     const destinations: Destination[] | undefined = queryClient.getQueryData([
         "destinations",

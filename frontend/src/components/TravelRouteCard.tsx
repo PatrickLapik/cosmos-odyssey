@@ -54,6 +54,7 @@ type TravelStartEndProps = {
 };
 
 export const TravelStartEnd = ({ travelRoute }: TravelStartEndProps) => {
+  if (travelRoute.companyRouteResponses.length <= 0) return;
   const firstResponse = travelRoute.companyRouteResponses[0];
   const lastResponse =
     travelRoute.companyRouteResponses[

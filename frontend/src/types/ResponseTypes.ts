@@ -41,8 +41,7 @@ export type Reservation = {
     id: string;
     firstName: string;
     lastName: string;
-    companyRoutes: Route[];
+    companyRoutesResponses: CompanyRouteResponse[];
     totalPrice: number;
     totalTravelMinutes: number;
-    companyNames: string[];
 };

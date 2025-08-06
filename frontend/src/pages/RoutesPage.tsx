@@ -17,7 +17,7 @@ import { useValidTimer } from "@/providers/ValidTimerProvider";
 
 
 export default function RoutesPage() {
-  const { result: paramValues } = useFormQueryParams<FormValues>();
+  const paramValues = useFormQueryParams<FormValues>(["FromId", "ToId", "CompanyId", "SortBy", "SortOrder"]);
   const { timeLeft, query: validTimerQuery } = useValidTimer();
 
   useQuery({

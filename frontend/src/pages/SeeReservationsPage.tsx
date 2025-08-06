@@ -11,7 +11,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 
 export function SeeReservationsPage() {
-  const { result: param } = useFormQueryParams<SeeReservationFormValues>();
+  const param = useFormQueryParams<SeeReservationFormValues>(["FirstName", "LastName"]);
 
   const form = useForm<SeeReservationFormValues>({
     resolver: zodResolver(seeReservationSchema),
@@ -30,9 +30,9 @@ export function SeeReservationsPage() {
   };
 
   return (
-    <div className="flex space-x-4 space-y-6 w-full h-full">
+    <div className="flex space-x-4 w-full">
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(handleSeeing)} className="w-1/3 h-fit">
+        <form onSubmit={form.handleSubmit(handleSeeing)} className="w-1/3 h-full sticky top-20">
           <SeeReservationForm form={form} />
         </form>
       </Form>

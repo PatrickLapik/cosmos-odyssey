@@ -19,7 +19,7 @@ export const fetchRoutes = async (body: FormValues): Promise<TravelRoute[]> => {
     return res.data;
 };
 
-export const fetchReservations = async (values: SeeReservationFormValues): Promise<Reservation[]> => {
-    const res = await api.get(`reservations/${values.FirstName}/${values.LastName}`);
+export const fetchReservations = async (body: SeeReservationFormValues): Promise<Reservation[]> => {
+    const res = await api.post("reservations/show", body);
     return res.data;
 };

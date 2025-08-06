@@ -1,5 +1,5 @@
 import { TravelRouteCard } from "./TravelRouteCard";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { fetchRoutes } from "@/lib/fetches";
 import {
   routeFiltersSchema,
@@ -15,6 +15,8 @@ type TravelRouteListProps = {
 
 export const TravelRouteList = ({ formValues }: TravelRouteListProps) => {
   const { timeLeft } = useValidTimer();
+
+  const queryClient = useQueryClient();
 
   const {
     data: travelRoutes,
@@ -32,9 +34,12 @@ export const TravelRouteList = ({ formValues }: TravelRouteListProps) => {
     const result = routeFiltersSchema.safeParse(formValues);
 
     if (result.success) {
+      const cached = queryClient.getQueryData(["routes", formValues]);
+
+      if (cached) return;
       void refetch();
     }
-  }, [formValues, refetch]);
+  }, [formValues, refetch, queryClient]);
 
   return (
     <FetchedContentContainer

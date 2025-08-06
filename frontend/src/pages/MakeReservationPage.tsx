@@ -1,5 +1,5 @@
 import { useLocation } from "react-router";
-import type { TravelRoute } from "@/types/ResponseTypes";
+import type { Reservation, TravelRoute } from "@/types/ResponseTypes";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { reservationSchema } from "@/schemas/ReservationSchema";
@@ -47,7 +47,7 @@ type ReservationDetailsProps = {
   travelRoute: TravelRoute;
 };
 
-const ReservationDetails = ({
+export const ReservationDetails = ({
   travelRoute,
 }: ReservationDetailsProps) => {
   return (
@@ -55,10 +55,14 @@ const ReservationDetails = ({
       <p className="w-full text-2xl">
         Trip total price: {travelRoute.totalPrice.toLocaleString()}€
       </p>
-      <TravelStartEnd travelRoute={travelRoute} />
-      {travelRoute.companyRouteResponses.map((cr) => (
-        <TravelDestination route={cr.route} company={cr.company} />
-      ))}
+      {travelRoute?.companyRouteResponses && (
+        <>
+          <TravelStartEnd travelRoute={travelRoute} />
+          {travelRoute.companyRouteResponses.map((cr) => (
+            <TravelDestination route={cr.route} company={cr.company} />
+          ))}
+        </>
+      )}
     </div>
   );
 };

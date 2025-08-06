@@ -4,12 +4,11 @@ import {
   seeReservationSchema,
   type SeeReservationFormValues,
 } from "@/schemas/SeeReservationSchema";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { safeParse } from "zod/v4/core";
 import { FetchedContentContainer } from "./FetchedContentContainer";
-import type { Reservation } from "@/types/ResponseTypes";
-import { LucideArrowRight } from "lucide-react";
+import { ReservationDetails } from "@/pages/MakeReservationPage";
 
 type ReservationListProps = {
   formValues: SeeReservationFormValues;
@@ -17,6 +16,8 @@ type ReservationListProps = {
 
 export const ReservationsList = ({ formValues }: ReservationListProps) => {
   const { timeLeft } = useValidTimer();
+
+  const queryClient = useQueryClient();
 
   const {
     data: travelRoutes,
@@ -34,6 +35,8 @@ export const ReservationsList = ({ formValues }: ReservationListProps) => {
     const result = safeParse(seeReservationSchema, formValues);
 
     if (result.success) {
+      const cached = queryClient.getQueryData(["routes", formValues]);
+      if (cached) return;
       void refetch();
     }
   }, [formValues, refetch]);
@@ -43,32 +46,9 @@ export const ReservationsList = ({ formValues }: ReservationListProps) => {
       isLoading={isLoading || isRefetching}
       data={travelRoutes}
     >
-      {travelRoutes?.map((cr, i) => (
-        <ReservationDetails key={i} reservation={cr} />
+      {travelRoutes?.map((tr, i) => (
+        <ReservationDetails key={i} travelRoute={tr} />
       ))}
     </FetchedContentContainer>
-  );
-};
-
-const ReservationDetails = ({ reservation }: { reservation: Reservation }) => {
-  const routes = reservation.companyRoutes;
-  const firstRoute = routes[0];
-  const lastRoute = routes[routes.length - 1];
-  return (
-    <div className="flex flex-col bg-popover rounded border px-4 py-6 h-96">
-      <p>
-        Reservation for: {reservation.firstName} {reservation.lastName}
-      </p>
-      <div className="flex space-x-2">
-        <p>From: {firstRoute.from}</p>
-        <LucideArrowRight />
-        <p>To: {lastRoute.to}</p>
-      </div>
-      <p>Via: {reservation.companyNames.join(" and ")}</p>
-      <p>
-        Travel time: {(reservation.totalTravelMinutes / 60 / 24).toFixed(1)}{" "}
-        day(s)
-      </p>
-    </div>
   );
 };

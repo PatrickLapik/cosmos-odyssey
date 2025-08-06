@@ -1,18 +1,13 @@
 import { useSearchParams } from "react-router";
 
-export function useFormQueryParams<T extends Record<string, string>>() {
-    const [params] = useSearchParams();
+export function useFormQueryParams<T extends Record<string, string>>(
+  allowedKeys: (keyof T)[],
+): T {
+  const [params] = useSearchParams();
 
-    const result = {} as T;
+  const entries = Array.from(params.entries()).filter(([key]) =>
+    allowedKeys.includes(key as keyof T),
+  ) as [keyof T, string][];
 
-    for (const [key, value] of params.entries()) {
-        if (key in result) {
-            (result as any)[key] = value;
-        };
-    };
-
-    return {
-        result
-    };
-};
-
+  return Object.fromEntries(entries) as T;
+}

@@ -18,7 +18,7 @@ import type { RouteFormProps } from "./RouteFilters";
 import { useSyncQueryParam } from "@/hooks/useSyncQueryParam";
 
 export const RouteCompanySelect = ({ control }: RouteFormProps) => {
-    const [companyId, setCompanyId] = useSyncQueryParam("CompanyId");
+    const [companyId, setCompanyId] = useSyncQueryParam("CompanyId", 0);
 
     const queryClient = useQueryClient();
 
